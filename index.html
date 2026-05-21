@@ -406,6 +406,18 @@ body{
 /* empty */
 .empty-s{text-align:center;padding:20px;font-size:0.9rem;font-weight:700;color:var(--light);}
 
+/* ── ACCESS LOCK SCREEN ── */
+.lock-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;}
+.lock-bg{position:absolute;inset:0;background:linear-gradient(135deg,#FFF8F0,#FFE4CC);}
+.lock-card{position:relative;background:var(--white);border-radius:26px;padding:36px 32px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.15);max-width:320px;width:88%;animation:celIn 0.5s ease-out;}
+.lock-emoji{font-size:4rem;margin-bottom:8px;}
+.lock-title{font-size:1.2rem;font-weight:900;color:var(--dark);margin-bottom:6px;}
+.lock-sub{font-size:0.78rem;font-weight:700;color:var(--mid);margin-bottom:22px;}
+.lock-inp{width:100%;padding:14px;border:3px solid var(--peach);border-radius:14px;font-size:2rem;font-family:'Nunito',sans-serif;font-weight:900;text-align:center;letter-spacing:14px;outline:none;background:var(--cream);box-sizing:border-box;}
+.lock-inp:focus{border-color:var(--rose);}
+.lock-err{color:var(--rose);font-size:0.78rem;font-weight:800;margin-top:10px;min-height:20px;}
+.lock-btn{margin-top:16px;padding:14px 48px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,138,0.35);}
+
 /* ── SETTINGS GEAR ── */
 .settings-gear{position:absolute;top:8px;right:12px;font-size:1.4rem;cursor:pointer;opacity:0.5;z-index:10;transition:all 0.3s;}
 .settings-gear:hover{opacity:1;transform:rotate(60deg);}
@@ -464,6 +476,20 @@ body{
 </style>
 </head>
 <body>
+
+<!-- ═══ ACCESS LOCK SCREEN ═══ -->
+<div class="lock-overlay" id="lockScreen">
+  <div class="lock-bg"></div>
+  <div class="lock-card">
+    <div class="lock-emoji">🔐</div>
+    <div class="lock-title">需要密码才能进入</div>
+    <div class="lock-sub">请输入访问密码（默认：1234）</div>
+    <input class="lock-inp" id="lockPinInp" type="password" maxlength="4" inputmode="numeric" placeholder="····"
+      onkeydown="if(event.key==='Enter')unlockApp()">
+    <div class="lock-err" id="lockErr"></div>
+    <button class="lock-btn" onclick="unlockApp()">进入 ✨</button>
+  </div>
+</div>
 
 <!-- CELEBRATION -->
 <div class="cel" id="cel">
@@ -1020,6 +1046,19 @@ function showPage(id,btn){
 }
 
 // ═══════════════════════════════════════
+//  ACCESS LOCK
+// ═══════════════════════════════════════
+function unlockApp(){
+  if(document.getElementById('lockPinInp').value===adminPin){
+    sessionStorage.setItem('ct_unlocked','1');
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('lockErr').textContent='';
+  }else{
+    document.getElementById('lockErr').textContent='密码错误，请重试';
+  }
+}
+
+// ═══════════════════════════════════════
 //  PIN
 // ═══════════════════════════════════════
 let pinTarget=null,pinBtn=null;
@@ -1337,6 +1376,7 @@ function resetAll(){
   ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed','ct_sfx_on','ct_sfx_vol','ct_bgm_on','ct_bgm_vol'].forEach(k=>localStorage.removeItem(k));
   tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;
   Sound.sfxOn=true;Sound.sfxVol=0.8;Sound.bgmOn=false;Sound.bgmVol=0.3;Sound.stopBgm();
+  sessionStorage.removeItem('ct_unlocked');
   LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);
   renderAdmin();renderHome();alert('已清空！重新打开页面会再次显示欢迎引导～');
 }
@@ -1448,6 +1488,10 @@ function welcomeStart(){
 renderHome();
 renderCal();
 initWelcome();
+// Access lock check (per-browser-session)
+if(sessionStorage.getItem('ct_unlocked')==='1'){
+  document.getElementById('lockScreen').style.display='none';
+}
 </script>
 
 <!-- PWA Service Worker -->
