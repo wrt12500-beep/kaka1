@@ -55,9 +55,6 @@ body{
 .nb .ni{font-size:1.45rem;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);}
 .nb.active{color:var(--rose);}
 .nb.active .ni{transform:scale(1.25) translateY(-2px);}
-.mute-btn{color:var(--teal);font-size:0.55rem;}
-.mute-btn .ni{font-size:1.2rem;}
-
 /* ── CARD ── */
 .card{background:var(--white);border-radius:22px;padding:16px;margin-bottom:12px;
   box-shadow:0 4px 18px var(--shadow);border:1.5px solid rgba(255,180,150,0.15);}
@@ -409,6 +406,40 @@ body{
 /* empty */
 .empty-s{text-align:center;padding:20px;font-size:0.9rem;font-weight:700;color:var(--light);}
 
+/* ── SETTINGS GEAR ── */
+.settings-gear{position:absolute;top:8px;right:12px;font-size:1.4rem;cursor:pointer;opacity:0.5;z-index:10;transition:all 0.3s;}
+.settings-gear:hover{opacity:1;transform:rotate(60deg);}
+
+/* ── SETTINGS PANEL ── */
+.settings-overlay{position:fixed;inset:0;z-index:160;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.25);}
+.settings-overlay.show{display:flex;}
+.settings-sheet{position:relative;background:var(--white);border-radius:28px 28px 0 0;padding:20px 22px 36px;width:100%;max-width:480px;box-shadow:0 -8px 30px var(--shadow);animation:slideUp 0.3s ease-out;}
+.settings-handle{width:36px;height:4px;background:var(--peach);border-radius:4px;margin:0 auto 18px;}
+.settings-title{font-size:1.1rem;font-weight:900;color:var(--dark);margin-bottom:20px;}
+
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.setting-icon{font-size:1.4rem;margin-right:8px;}
+.setting-label{font-size:0.95rem;font-weight:800;color:var(--dark);display:flex;align-items:center;}
+
+/* Toggle switch */
+.toggle-switch{position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;}
+.toggle-switch input{display:none;}
+.toggle-track{position:absolute;inset:0;border-radius:28px;background:#E0D5CD;transition:background 0.3s;}
+.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:white;transition:transform 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.15);}
+.toggle-switch input:checked+.toggle-track{background:var(--teal);}
+.toggle-switch input:checked+.toggle-track::after{transform:translateX(24px);}
+
+/* Volume slider */
+.setting-slider-row{display:flex;align-items:center;gap:8px;padding:6px 0 14px;}
+.slider-icon{font-size:1.1rem;flex-shrink:0;}
+.vol-slider{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--peach);outline:none;}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--rose);cursor:pointer;box-shadow:0 2px 6px rgba(255,107,138,0.35);}
+.vol-slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--rose);cursor:pointer;border:none;}
+
+.setting-divider{height:1px;background:var(--peach);margin:6px 0;}
+
+.settings-close-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;margin-top:16px;}
+
 /* ── WELCOME ONBOARDING ── */
 .welcome-overlay{position:fixed;inset:0;z-index:250;display:none;align-items:center;justify-content:center;}
 .welcome-bg{position:absolute;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(5px);}
@@ -461,6 +492,48 @@ body{
   </div>
 </div>
 
+<!-- ═══ SETTINGS PANEL ═══ -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings(event)">
+  <div class="settings-sheet" onclick="event.stopPropagation()">
+    <div class="settings-handle"></div>
+    <div class="settings-title">⚙️ 声音设置</div>
+
+    <!-- Sound effects -->
+    <div class="setting-row">
+      <span class="setting-icon">🔊</span>
+      <span class="setting-label">音效</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="sfxToggle" onchange="toggleSfx()" checked>
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="setting-slider-row">
+      <span class="slider-icon">🔈</span>
+      <input type="range" class="vol-slider" id="sfxVolSlider" min="0" max="100" value="80" oninput="changeSfxVol()">
+      <span class="slider-icon">🔊</span>
+    </div>
+
+    <div class="setting-divider"></div>
+
+    <!-- Background music -->
+    <div class="setting-row">
+      <span class="setting-icon">🎵</span>
+      <span class="setting-label">背景音乐</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="bgmToggle" onchange="toggleBgm()">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    <div class="setting-slider-row">
+      <span class="slider-icon">🔈</span>
+      <input type="range" class="vol-slider" id="bgmVolSlider" min="0" max="100" value="30" oninput="changeBgmVol()">
+      <span class="slider-icon">🔊</span>
+    </div>
+
+    <button class="settings-close-btn" onclick="closeSettings()">完成 ✓</button>
+  </div>
+</div>
+
 <!-- DAY DETAIL POPUP -->
 <div class="day-popup" id="dayPopup">
   <div class="dp-bg" onclick="closeDayPopup()"></div>
@@ -498,6 +571,7 @@ body{
 <!-- ═══ PAGE: HOME ═══ -->
 <div class="page active" id="page-home">
   <div class="pg-header">
+    <div class="settings-gear" onclick="openSettings()">⚙️</div>
     <h1>🌸 <span id="kidNameLabel"></span>的小目标</h1>
     <div class="sub">每完成一个，猫咪就更开心啦！</div>
     <div class="stars-pill"><span class="si">⭐</span><span id="starCount">0</span> 颗星星</div>
@@ -645,20 +719,34 @@ body{
   <button class="nb" onclick="showPage('pet',this)"><span class="ni">🐾</span>我的宠物</button>
   <button class="nb" onclick="showPage('cal',this)"><span class="ni">📅</span>月历</button>
   <button class="nb" onclick="reqPin('admin',this)"><span class="ni">🔧</span>家长后台</button>
-  <button class="nb mute-btn" id="muteBtn" onclick="cycleVolume()"><span class="ni">🔊</span>响亮</button>
 </nav>
 
 <script>
 // ═══════════════════════════════════════
 //  SOUND ENGINE (Web Audio API — no files needed)
 // ═══════════════════════════════════════
-const VOLUME_LEVELS = [0, 0.3, 0.6, 1.0]; // 4 levels
-const VOL_ICONS = ['🔇', '🔈', '🔉', '🔊'];
-const VOL_LABELS = ['静音', '轻声', '中等', '响亮'];
-
 const Sound=(()=>{
   let ctx=null;
-  let volIdx=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_volume_idx'));return v!=null?v:3;}catch(e){return 3;}})();
+  // SFX settings
+  let sfxOn=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_sfx_on'));return v!=null?v:true;}catch{return true;}})();
+  let sfxVol=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_sfx_vol'));return v!=null?v:0.8;}catch{return 0.8;}})();
+  // BGM settings
+  let bgmOn=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_bgm_on'));return v!=null?v:false;}catch{return false;}})();
+  let bgmVol=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_bgm_vol'));return v!=null?v:0.3;}catch{return 0.3;}})();
+
+  // BGM state
+  let bgmTimer=null, bgmGain=null, bgmNoteIdx=0;
+  // Pentatonic scale melody (gentle lullaby)
+  const BGM_NOTES=[
+    {f:262,d:0.4},{f:330,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // C E G E
+    {f:294,d:0.4},{f:392,d:0.6},{f:330,d:0.5},                  // D G E
+    {f:262,d:0.4},{f:330,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // C E G E
+    {f:349,d:0.4},{f:294,d:0.4},{f:262,d:0.8},                  // F D C
+    {f:392,d:0.4},{f:440,d:0.4},{f:392,d:0.3},{f:330,d:0.4},  // G A G E
+    {f:294,d:0.5},{f:262,d:0.6},                                 // D C
+    {f:330,d:0.4},{f:262,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // E C G E
+    {f:349,d:0.4},{f:294,d:0.4},{f:262,d:0.8},                  // F D C
+  ];
 
   function ensureCtx(){
     if(!ctx){
@@ -668,17 +756,15 @@ const Sound=(()=>{
     return !!ctx;
   }
 
-  function masterVol(){ return VOLUME_LEVELS[volIdx]||1.0; }
-
   function tone(freq,dur,type='sine',vol=0.8,delay=0){
-    const mv=masterVol();
-    if(mv<=0)return;
     if(!ensureCtx())return;
+    const v=vol*sfxVol;
+    if(v<=0||!sfxOn)return;
     try{
       const t0=ctx.currentTime+(delay/1000);
       const osc=ctx.createOscillator(),gn=ctx.createGain();
       osc.type=type;osc.frequency.setValueAtTime(freq,t0);
-      gn.gain.setValueAtTime(vol*mv,t0);
+      gn.gain.setValueAtTime(v,t0);
       gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
       osc.connect(gn);gn.connect(ctx.destination);
       osc.start(t0);osc.stop(t0+dur/1000+0.05);
@@ -718,6 +804,44 @@ const Sound=(()=>{
     ensureCtx();tone(988,0.12,'sine',0.4);
     setTimeout(()=>tone(1175,0.14,'sine',0.45),100);
   }
+
+  // ── Background Music ──
+  function playBgmNote(){
+    if(!bgmOn||!ensureCtx())return;
+    const note=BGM_NOTES[bgmNoteIdx];
+    const v=bgmVol*0.15; // quiet, gentle
+    if(v>0&&bgmOn){
+      try{
+        const t0=ctx.currentTime;
+        const osc=ctx.createOscillator(),gn=ctx.createGain();
+        osc.type='sine';osc.frequency.setValueAtTime(note.f,t0);
+        gn.gain.setValueAtTime(v,t0);
+        gn.gain.exponentialRampToValueAtTime(0.001,t0+note.d*0.9);
+        osc.connect(gn);
+        // Connect through bgmGain if set, else direct
+        if(bgmGain)gn.connect(bgmGain);else gn.connect(ctx.destination);
+        osc.start(t0);osc.stop(t0+note.d);
+      }catch(e){}
+    }
+    bgmNoteIdx=(bgmNoteIdx+1)%BGM_NOTES.length;
+    if(bgmOn)bgmTimer=setTimeout(playBgmNote,BGM_NOTES[bgmNoteIdx].d*1100);
+  }
+
+  function startBgm(){
+    ensureCtx();
+    if(!bgmGain){
+      bgmGain=ctx.createGain();
+      bgmGain.gain.value=1;
+      bgmGain.connect(ctx.destination);
+    }
+    bgmNoteIdx=0;
+    playBgmNote();
+  }
+
+  function stopBgm(){
+    if(bgmTimer){clearTimeout(bgmTimer);bgmTimer=null;}
+  }
+
   function testBeep(){
     ensureCtx();tone(880,0.1,'sine',0.6);
     setTimeout(()=>tone(1100,0.12,'sine',0.6),120);
@@ -725,10 +849,26 @@ const Sound=(()=>{
 
   return{
     taskComplete,cel,feed,play,sleep,bath,heart,testBeep,
-    get volIdx(){return volIdx;},
-    set volIdx(v){volIdx=v;LS.set('ct_volume_idx',v);},
-    get masterVol(){return masterVol();},
-    init(){ensureCtx();}
+    init(){ensureCtx();},
+    // SFX getters/setters
+    get sfxOn(){return sfxOn;},
+    set sfxOn(v){sfxOn=v;localStorage.setItem('ct_sfx_on',JSON.stringify(v));},
+    get sfxVol(){return sfxVol;},
+    set sfxVol(v){sfxVol=v;localStorage.setItem('ct_sfx_vol',JSON.stringify(v));},
+    // BGM getters/setters
+    get bgmOn(){return bgmOn;},
+    set bgmOn(v){
+      bgmOn=v;
+      localStorage.setItem('ct_bgm_on',JSON.stringify(v));
+      if(v){startBgm();}else{stopBgm();}
+    },
+    get bgmVol(){return bgmVol;},
+    set bgmVol(v){
+      bgmVol=v;
+      localStorage.setItem('ct_bgm_vol',JSON.stringify(v));
+      if(bgmGain)bgmGain.gain.value=v;
+    },
+    stopBgm
   };
 })();
 // Pre-create AudioContext on any user gesture (mobile browsers require this)
@@ -891,12 +1031,31 @@ function reqPin(t,b){
   setTimeout(()=>document.getElementById('pinInp').focus(),100);
 }
 function closePin(){document.getElementById('pinModal').classList.remove('show');}
-function cycleVolume(){
-  Sound.volIdx=(Sound.volIdx+1)%4;
-  const b=document.getElementById('muteBtn');
-  b.querySelector('.ni').textContent=VOL_ICONS[Sound.volIdx];
-  b.lastChild.textContent=VOL_LABELS[Sound.volIdx];
-  if(Sound.volIdx>0)Sound.testBeep();
+// ── Settings Panel ──
+function openSettings(){
+  document.getElementById('settingsOverlay').classList.add('show');
+  // Sync UI with current state
+  document.getElementById('sfxToggle').checked=Sound.sfxOn;
+  document.getElementById('sfxVolSlider').value=Math.round(Sound.sfxVol*100);
+  document.getElementById('bgmToggle').checked=Sound.bgmOn;
+  document.getElementById('bgmVolSlider').value=Math.round(Sound.bgmVol*100);
+}
+function closeSettings(e){
+  if(e&&e.target!==e.currentTarget)return;
+  document.getElementById('settingsOverlay').classList.remove('show');
+}
+function toggleSfx(){
+  Sound.sfxOn=document.getElementById('sfxToggle').checked;
+  if(Sound.sfxOn)Sound.testBeep();
+}
+function changeSfxVol(){
+  Sound.sfxVol=parseInt(document.getElementById('sfxVolSlider').value)/100;
+}
+function toggleBgm(){
+  Sound.bgmOn=document.getElementById('bgmToggle').checked;
+}
+function changeBgmVol(){
+  Sound.bgmVol=parseInt(document.getElementById('bgmVolSlider').value)/100;
 }
 function checkPin(){
   if(document.getElementById('pinInp').value===adminPin){closePin();showPage(pinTarget,pinBtn);}
@@ -1175,8 +1334,9 @@ function resetDay(){
 }
 function resetAll(){
   if(!confirm('确认清空所有数据？不可恢复！'))return;
-  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed','ct_volume_idx'].forEach(k=>localStorage.removeItem(k));
-  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;Sound.volIdx=3;
+  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed','ct_sfx_on','ct_sfx_vol','ct_bgm_on','ct_bgm_vol'].forEach(k=>localStorage.removeItem(k));
+  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;
+  Sound.sfxOn=true;Sound.sfxVol=0.8;Sound.bgmOn=false;Sound.bgmVol=0.3;Sound.stopBgm();
   LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);
   renderAdmin();renderHome();alert('已清空！重新打开页面会再次显示欢迎引导～');
 }
@@ -1288,12 +1448,6 @@ function welcomeStart(){
 renderHome();
 renderCal();
 initWelcome();
-// Restore volume button state
-(function(){
-  const b=document.getElementById('muteBtn');
-  b.querySelector('.ni').textContent=VOL_ICONS[Sound.volIdx];
-  b.lastChild.textContent=VOL_LABELS[Sound.volIdx];
-})();
 </script>
 
 <!-- PWA Service Worker -->
