@@ -645,15 +645,20 @@ body{
   <button class="nb" onclick="showPage('pet',this)"><span class="ni">🐾</span>我的宠物</button>
   <button class="nb" onclick="showPage('cal',this)"><span class="ni">📅</span>月历</button>
   <button class="nb" onclick="reqPin('admin',this)"><span class="ni">🔧</span>家长后台</button>
-  <button class="nb mute-btn" id="muteBtn" onclick="toggleMute()"><span class="ni">🔊</span>音效</button>
+  <button class="nb mute-btn" id="muteBtn" onclick="cycleVolume()"><span class="ni">🔊</span>响亮</button>
 </nav>
 
 <script>
 // ═══════════════════════════════════════
 //  SOUND ENGINE (Web Audio API — no files needed)
 // ═══════════════════════════════════════
+const VOLUME_LEVELS = [0, 0.3, 0.6, 1.0]; // 4 levels
+const VOL_ICONS = ['🔇', '🔈', '🔉', '🔊'];
+const VOL_LABELS = ['静音', '轻声', '中等', '响亮'];
+
 const Sound=(()=>{
-  let ctx=null,muted=false;
+  let ctx=null;
+  let volIdx=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_volume_idx'));return v!=null?v:3;}catch(e){return 3;}})();
 
   function ensureCtx(){
     if(!ctx){
@@ -663,61 +668,56 @@ const Sound=(()=>{
     return !!ctx;
   }
 
+  function masterVol(){ return VOLUME_LEVELS[volIdx]||1.0; }
+
   function tone(freq,dur,type='sine',vol=0.8,delay=0){
-    if(muted)return;
+    const mv=masterVol();
+    if(mv<=0)return;
     if(!ensureCtx())return;
     try{
       const t0=ctx.currentTime+(delay/1000);
       const osc=ctx.createOscillator(),gn=ctx.createGain();
       osc.type=type;osc.frequency.setValueAtTime(freq,t0);
-      gn.gain.setValueAtTime(vol,t0);
+      gn.gain.setValueAtTime(vol*mv,t0);
       gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
       osc.connect(gn);gn.connect(ctx.destination);
       osc.start(t0);osc.stop(t0+dur/1000+0.05);
     }catch(e){}
   }
 
-  // Task complete: ascending chime C5→E5→G5
   function taskComplete(){
     ensureCtx();
     [523,659,784].forEach((f,i)=>tone(f,0.22,'sine',0.7,i*80));
   }
-  // Celebration fanfare
   function cel(){
     ensureCtx();
     [523,659,784,1047].forEach((f,i)=>tone(f,0.28,'triangle',0.8,i*100));
   }
-  // Feed: crunchy
   function feed(){
     ensureCtx();tone(160,0.1,'sawtooth',0.3);
     setTimeout(()=>tone(210,0.08,'sawtooth',0.25),60);
     setTimeout(()=>tone(190,0.08,'sawtooth',0.25),130);
   }
-  // Play: happy bounce
   function play(){
     ensureCtx();tone(660,0.09,'square',0.3);
     setTimeout(()=>tone(880,0.12,'square',0.32),80);
     setTimeout(()=>tone(1100,0.14,'triangle',0.35),160);
   }
-  // Sleep: gentle descent
   function sleep(){
     ensureCtx();tone(440,0.35,'sine',0.3);
     setTimeout(()=>tone(349,0.45,'sine',0.28),320);
     setTimeout(()=>tone(261,0.6,'sine',0.25),750);
   }
-  // Bath: bubble pops
   function bath(){
     ensureCtx();
     for(let i=0;i<5;i++){
       setTimeout(()=>tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.25),i*80);
     }
   }
-  // Heart tap
   function heart(){
     ensureCtx();tone(988,0.12,'sine',0.4);
     setTimeout(()=>tone(1175,0.14,'sine',0.45),100);
   }
-  // Test beep on unmute
   function testBeep(){
     ensureCtx();tone(880,0.1,'sine',0.6);
     setTimeout(()=>tone(1100,0.12,'sine',0.6),120);
@@ -725,8 +725,9 @@ const Sound=(()=>{
 
   return{
     taskComplete,cel,feed,play,sleep,bath,heart,testBeep,
-    get muted(){return muted;},
-    set muted(v){muted=v;},
+    get volIdx(){return volIdx;},
+    set volIdx(v){volIdx=v;LS.set('ct_volume_idx',v);},
+    get masterVol(){return masterVol();},
     init(){ensureCtx();}
   };
 })();
@@ -890,17 +891,12 @@ function reqPin(t,b){
   setTimeout(()=>document.getElementById('pinInp').focus(),100);
 }
 function closePin(){document.getElementById('pinModal').classList.remove('show');}
-function toggleMute(){
-  Sound.muted=!Sound.muted;
+function cycleVolume(){
+  Sound.volIdx=(Sound.volIdx+1)%4;
   const b=document.getElementById('muteBtn');
-  if(Sound.muted){
-    b.querySelector('.ni').textContent='🔇';
-    b.lastChild.textContent='静音';
-  }else{
-    b.querySelector('.ni').textContent='🔊';
-    b.lastChild.textContent='音效';
-    Sound.testBeep();
-  }
+  b.querySelector('.ni').textContent=VOL_ICONS[Sound.volIdx];
+  b.lastChild.textContent=VOL_LABELS[Sound.volIdx];
+  if(Sound.volIdx>0)Sound.testBeep();
 }
 function checkPin(){
   if(document.getElementById('pinInp').value===adminPin){closePin();showPage(pinTarget,pinBtn);}
@@ -1179,8 +1175,8 @@ function resetDay(){
 }
 function resetAll(){
   if(!confirm('确认清空所有数据？不可恢复！'))return;
-  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed'].forEach(k=>localStorage.removeItem(k));
-  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;
+  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed','ct_volume_idx'].forEach(k=>localStorage.removeItem(k));
+  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;Sound.volIdx=3;
   LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);
   renderAdmin();renderHome();alert('已清空！重新打开页面会再次显示欢迎引导～');
 }
@@ -1292,6 +1288,12 @@ function welcomeStart(){
 renderHome();
 renderCal();
 initWelcome();
+// Restore volume button state
+(function(){
+  const b=document.getElementById('muteBtn');
+  b.querySelector('.ni').textContent=VOL_ICONS[Sound.volIdx];
+  b.lastChild.textContent=VOL_LABELS[Sound.volIdx];
+})();
 </script>
 
 <!-- PWA Service Worker -->
