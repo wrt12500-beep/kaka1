@@ -844,10 +844,10 @@ const ANIMALS = {
 };
 
 const BADGES = [
-  {i:'🌱',n:'第一步',  t:1},  {i:'⭐',n:'三星达人', t:3},
-  {i:'🏅',n:'五连胜',  t:5},  {i:'👑',n:'十星王者', t:10},
-  {i:'🦸',n:'二十英雄',t:20}, {i:'🚀',n:'三十冲天', t:30},
-  {i:'💎',n:'五十钻石',t:50}, {i:'🏆',n:'百星传说', t:100},
+  {i:'🍭',n:'棒棒糖',  t:1},  {i:'⭐',n:'小星星',  t:3},
+  {i:'🎈',n:'红气球',  t:5},  {i:'🌈',n:'彩虹糖',  t:8},
+  {i:'🦋',n:'花蝴蝶',  t:12}, {i:'🎵',n:'小铃铛',  t:18},
+  {i:'🏰',n:'大城堡',  t:28}, {i:'🦄',n:'独角兽',  t:45},
 ];
 const CELS = [
   {e:'🎉',t:'任务完成啦！'},{e:'⭐',t:'你太棒了！'},
@@ -1179,10 +1179,10 @@ function resetDay(){
 }
 function resetAll(){
   if(!confirm('确认清空所有数据？不可恢复！'))return;
-  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log'].forEach(k=>localStorage.removeItem(k));
-  tasks=[];stars=0;calData={};petXP=0;petLog=[];
+  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed'].forEach(k=>localStorage.removeItem(k));
+  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;
   LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);
-  renderAdmin();alert('已清空！');
+  renderAdmin();renderHome();alert('已清空！重新打开页面会再次显示欢迎引导～');
 }
 function praiseKid(msg,e){
   showSimpleCel(e,'爸妈说：',msg);spawnConfetti();
