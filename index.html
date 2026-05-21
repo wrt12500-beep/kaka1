@@ -610,70 +610,71 @@ const Sound=(()=>{
   let ctx=null,muted=false;
 
   function ensureCtx(){
-    if(ctx){
-      // Always try to resume — required by mobile browsers after page load
-      if(ctx.state==='suspended') ctx.resume();
-      return;
+    if(!ctx){
+      try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
     }
-    try{
-      ctx=new(window.AudioContext||window.webkitAudioContext)();
-    }catch(e){return;}
+    if(ctx&&ctx.state==='suspended'){ctx.resume();}
+    return !!ctx;
   }
 
   function tone(freq,dur,type='sine',vol=0.5,delay=0){
-    if(muted||!ctx)return;
-    ensureCtx();
-    const t0=ctx.currentTime+(delay/1000);
-    const osc=ctx.createOscillator(),gn=ctx.createGain();
-    osc.type=type;osc.frequency.setValueAtTime(freq,t0);
-    gn.gain.setValueAtTime(vol,t0);
-    gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
-    osc.connect(gn);gn.connect(ctx.destination);
-    osc.start(t0);osc.stop(t0+dur/1000+0.05);
+    if(muted)return;
+    if(!ensureCtx())return;
+    try{
+      const t0=ctx.currentTime+(delay/1000);
+      const osc=ctx.createOscillator(),gn=ctx.createGain();
+      osc.type=type;osc.frequency.setValueAtTime(freq,t0);
+      gn.gain.setValueAtTime(vol,t0);
+      gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
+      osc.connect(gn);gn.connect(ctx.destination);
+      osc.start(t0);osc.stop(t0+dur/1000+0.05);
+    }catch(e){/* browser may not support this oscillator type */}
   }
 
   // Task complete: ascending chime C5→E5→G5
   function taskComplete(){
+    ensureCtx();
     [523,659,784].forEach((f,i)=>tone(f,0.22,'sine',0.45,i*80));
   }
   // Celebration fanfare
   function cel(){
+    ensureCtx();
     [523,659,784,1047].forEach((f,i)=>tone(f,0.28,'triangle',0.5,i*100));
   }
   // Feed: crunchy
   function feed(){
-    tone(160,0.1,'sawtooth',0.18);
-    setTimeout(()=>{ensureCtx();tone(210,0.08,'sawtooth',0.15);},60);
-    setTimeout(()=>{ensureCtx();tone(190,0.08,'sawtooth',0.15);},130);
+    ensureCtx();tone(160,0.1,'sawtooth',0.18);
+    setTimeout(()=>tone(210,0.08,'sawtooth',0.15),60);
+    setTimeout(()=>tone(190,0.08,'sawtooth',0.15),130);
   }
   // Play: happy bounce
   function play(){
-    tone(660,0.09,'square',0.18);
-    setTimeout(()=>{ensureCtx();tone(880,0.12,'square',0.2);},80);
-    setTimeout(()=>{ensureCtx();tone(1100,0.14,'triangle',0.22);},160);
+    ensureCtx();tone(660,0.09,'square',0.18);
+    setTimeout(()=>tone(880,0.12,'square',0.2),80);
+    setTimeout(()=>tone(1100,0.14,'triangle',0.22),160);
   }
   // Sleep: gentle descent
   function sleep(){
-    tone(440,0.35,'sine',0.2);
-    setTimeout(()=>{ensureCtx();tone(349,0.45,'sine',0.18);},320);
-    setTimeout(()=>{ensureCtx();tone(261,0.6,'sine',0.15);},750);
+    ensureCtx();tone(440,0.35,'sine',0.2);
+    setTimeout(()=>tone(349,0.45,'sine',0.18),320);
+    setTimeout(()=>tone(261,0.6,'sine',0.15),750);
   }
   // Bath: bubble pops
   function bath(){
+    ensureCtx();
     for(let i=0;i<5;i++){
-      setTimeout(()=>{ensureCtx();tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.15);},i*80);
+      setTimeout(()=>tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.15),i*80);
     }
   }
   // Heart tap
   function heart(){
-    tone(988,0.12,'sine',0.25);
-    setTimeout(()=>{ensureCtx();tone(1175,0.14,'sine',0.28);},100);
+    ensureCtx();tone(988,0.12,'sine',0.25);
+    setTimeout(()=>tone(1175,0.14,'sine',0.28),100);
   }
-  // Quick test beep (used when unmuting)
+  // Test beep on unmute
   function testBeep(){
-    ensureCtx();
-    tone(880,0.1,'sine',0.4);
-    setTimeout(()=>{ensureCtx();tone(1100,0.12,'sine',0.4);},120);
+    ensureCtx();tone(880,0.1,'sine',0.4);
+    setTimeout(()=>tone(1100,0.12,'sine',0.4),120);
   }
 
   return{
@@ -683,14 +684,12 @@ const Sound=(()=>{
     init(){ensureCtx();}
   };
 })();
-// Pre-create AudioContext on first user tap (mobile requires gesture)
+// Pre-create AudioContext on any user gesture (mobile browsers require this)
 function audioBootstrap(){
   Sound.init();
-  document.removeEventListener('touchstart',audioBootstrap);
-  document.removeEventListener('click',audioBootstrap);
 }
-document.addEventListener('touchstart',audioBootstrap);
-document.addEventListener('click',audioBootstrap);
+document.addEventListener('touchstart',audioBootstrap,{once:true});
+document.addEventListener('click',audioBootstrap,{once:true});
 
 // ═══════════════════════════════════════
 //  DATA
