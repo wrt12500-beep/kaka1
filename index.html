@@ -408,6 +408,28 @@ body{
 
 /* empty */
 .empty-s{text-align:center;padding:20px;font-size:0.9rem;font-weight:700;color:var(--light);}
+
+/* ── WELCOME ONBOARDING ── */
+.welcome-overlay{position:fixed;inset:0;z-index:250;display:none;align-items:center;justify-content:center;}
+.welcome-bg{position:absolute;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(5px);}
+.welcome-card{position:relative;background:var(--white);border-radius:26px;padding:32px 28px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.25);animation:celIn 0.5s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;width:90%;}
+.welcome-emoji{font-size:3.5rem;animation:jmp 0.7s ease-in-out infinite alternate;}
+.welcome-title{font-size:1.3rem;font-weight:900;color:var(--dark);margin:10px 0 4px;}
+.welcome-sub{font-size:0.8rem;font-weight:700;color:var(--mid);margin-bottom:20px;}
+.ws-label{font-size:0.82rem;font-weight:900;color:var(--dark);margin-bottom:8px;text-align:left;}
+.ws-inp{margin-bottom:12px;}
+.wel-btn{padding:12px 36px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,138,0.35);}
+.wel-btn-go{background:linear-gradient(135deg,var(--gold),var(--amber));color:#7A4500;box-shadow:0 4px 14px rgba(255,179,0,0.4);padding:14px 48px;font-size:1.05rem;margin-top:8px;}
+.wel-animal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+.wel-an{
+  aspect-ratio:1;border-radius:14px;border:2.5px solid var(--peach);background:var(--cream);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all 0.2s;
+  font-family:'Nunito',sans-serif;
+}
+.wel-an.sel{border-color:var(--rose);background:linear-gradient(135deg,#FFF0F5,#FFE0EC);box-shadow:0 3px 10px rgba(255,107,138,0.3);}
+.wel-an .ani{font-size:1.6rem;}
+.wel-an .ann{font-size:0.55rem;font-weight:800;color:var(--mid);}
+.wel-an.sel .ann{color:var(--rose);}
 </style>
 </head>
 <body>
@@ -449,10 +471,34 @@ body{
   </div>
 </div>
 
+<!-- ═══ WELCOME ONBOARDING ═══ -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-bg"></div>
+  <div class="welcome-card">
+    <div class="welcome-emoji">🌈</div>
+    <div class="welcome-title">欢迎来到小目标！</div>
+    <div class="welcome-sub">让我们先认识一下吧～</div>
+
+    <div class="welcome-step" id="ws1">
+      <div class="ws-label">👋 你的名字</div>
+      <input class="inp ws-inp" id="kidNameInp" placeholder="请输入你的名字（最多10字）" maxlength="10">
+      <button class="wel-btn" onclick="welcomeNext()">下一步 ›</button>
+    </div>
+
+    <div class="welcome-step" id="ws2" style="display:none">
+      <div class="ws-label">🐾 选一只你喜欢的宠物</div>
+      <div class="wel-animal-grid" id="welAnimalGrid"></div>
+      <div class="ws-label" style="margin-top:14px;">✏️ 给它起个名字</div>
+      <input class="inp ws-inp" id="petNickInp" placeholder="宠物名字（最多8字）" maxlength="8">
+      <button class="wel-btn wel-btn-go" onclick="welcomeStart()">开始吧！🎉</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ PAGE: HOME ═══ -->
 <div class="page active" id="page-home">
   <div class="pg-header">
-    <h1>🌸 我的小目标</h1>
+    <h1>🌸 <span id="kidNameLabel"></span>的小目标</h1>
     <div class="sub">每完成一个，猫咪就更开心啦！</div>
     <div class="stars-pill"><span class="si">⭐</span><span id="starCount">0</span> 颗星星</div>
   </div>
@@ -617,7 +663,7 @@ const Sound=(()=>{
     return !!ctx;
   }
 
-  function tone(freq,dur,type='sine',vol=0.5,delay=0){
+  function tone(freq,dur,type='sine',vol=0.8,delay=0){
     if(muted)return;
     if(!ensureCtx())return;
     try{
@@ -628,53 +674,53 @@ const Sound=(()=>{
       gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
       osc.connect(gn);gn.connect(ctx.destination);
       osc.start(t0);osc.stop(t0+dur/1000+0.05);
-    }catch(e){/* browser may not support this oscillator type */}
+    }catch(e){}
   }
 
   // Task complete: ascending chime C5→E5→G5
   function taskComplete(){
     ensureCtx();
-    [523,659,784].forEach((f,i)=>tone(f,0.22,'sine',0.45,i*80));
+    [523,659,784].forEach((f,i)=>tone(f,0.22,'sine',0.7,i*80));
   }
   // Celebration fanfare
   function cel(){
     ensureCtx();
-    [523,659,784,1047].forEach((f,i)=>tone(f,0.28,'triangle',0.5,i*100));
+    [523,659,784,1047].forEach((f,i)=>tone(f,0.28,'triangle',0.8,i*100));
   }
   // Feed: crunchy
   function feed(){
-    ensureCtx();tone(160,0.1,'sawtooth',0.18);
-    setTimeout(()=>tone(210,0.08,'sawtooth',0.15),60);
-    setTimeout(()=>tone(190,0.08,'sawtooth',0.15),130);
+    ensureCtx();tone(160,0.1,'sawtooth',0.3);
+    setTimeout(()=>tone(210,0.08,'sawtooth',0.25),60);
+    setTimeout(()=>tone(190,0.08,'sawtooth',0.25),130);
   }
   // Play: happy bounce
   function play(){
-    ensureCtx();tone(660,0.09,'square',0.18);
-    setTimeout(()=>tone(880,0.12,'square',0.2),80);
-    setTimeout(()=>tone(1100,0.14,'triangle',0.22),160);
+    ensureCtx();tone(660,0.09,'square',0.3);
+    setTimeout(()=>tone(880,0.12,'square',0.32),80);
+    setTimeout(()=>tone(1100,0.14,'triangle',0.35),160);
   }
   // Sleep: gentle descent
   function sleep(){
-    ensureCtx();tone(440,0.35,'sine',0.2);
-    setTimeout(()=>tone(349,0.45,'sine',0.18),320);
-    setTimeout(()=>tone(261,0.6,'sine',0.15),750);
+    ensureCtx();tone(440,0.35,'sine',0.3);
+    setTimeout(()=>tone(349,0.45,'sine',0.28),320);
+    setTimeout(()=>tone(261,0.6,'sine',0.25),750);
   }
   // Bath: bubble pops
   function bath(){
     ensureCtx();
     for(let i=0;i<5;i++){
-      setTimeout(()=>tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.15),i*80);
+      setTimeout(()=>tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.25),i*80);
     }
   }
   // Heart tap
   function heart(){
-    ensureCtx();tone(988,0.12,'sine',0.25);
-    setTimeout(()=>tone(1175,0.14,'sine',0.28),100);
+    ensureCtx();tone(988,0.12,'sine',0.4);
+    setTimeout(()=>tone(1175,0.14,'sine',0.45),100);
   }
   // Test beep on unmute
   function testBeep(){
-    ensureCtx();tone(880,0.1,'sine',0.4);
-    setTimeout(()=>tone(1100,0.12,'sine',0.4),120);
+    ensureCtx();tone(880,0.1,'sine',0.6);
+    setTimeout(()=>tone(1100,0.12,'sine',0.6),120);
   }
 
   return{
@@ -706,7 +752,10 @@ let petLog     = LS.get('ct_log',[]);
 let adminPin   = LS.get('ct_pin','1234');
 let selAnimal  = LS.get('ct_animal','cat');
 let petNickname= LS.get('ct_nick','奶糖');
+let kidName    = LS.get('ct_kidname','');
+let welcomed   = LS.get('ct_welcomed',false);
 let curMonth   = new Date();
+let welAnimal  = 'cat'; // temp selection during onboarding
 
 // ═══════════════════════════════════════
 //  ANIMAL CONFIGS
@@ -870,6 +919,7 @@ function changePin(){
 // ═══════════════════════════════════════
 function renderHome(){
   document.getElementById('starCount').textContent=stars;
+  document.getElementById('kidNameLabel').textContent=kidName||'我';
   const list=document.getElementById('taskList');
   if(!tasks.length){list.innerHTML='<div class="empty-s">📭 家长还没有添加任务哦～</div>';return;}
   list.innerHTML=tasks.map(t=>`
@@ -1194,10 +1244,54 @@ function heartFx(x,y){
 }
 
 // ═══════════════════════════════════════
+//  WELCOME ONBOARDING
+// ═══════════════════════════════════════
+function initWelcome(){
+  if(welcomed)return;
+  document.getElementById('welcomeOverlay').style.display='flex';
+  // Render animal grid for step 2
+  const grid=document.getElementById('welAnimalGrid');
+  grid.innerHTML=Object.entries(ANIMALS).map(([k,v])=>`
+    <button class="wel-an ${welAnimal===k?'sel':''}" onclick="welPick('${k}',this)">
+      <span class="ani">${v.icon}</span>
+      <span class="ann">${v.name}</span>
+    </button>`).join('');
+}
+function welPick(key,btn){
+  welAnimal=key;
+  document.querySelectorAll('.wel-an').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function welcomeNext(){
+  const name=document.getElementById('kidNameInp').value.trim();
+  if(!name){document.getElementById('kidNameInp').focus();return;}
+  kidName=name.substring(0,10);
+  document.getElementById('ws1').style.display='none';
+  document.getElementById('ws2').style.display='block';
+  document.getElementById('petNickInp').value=petNickname;
+}
+function welcomeStart(){
+  let nick=document.getElementById('petNickInp').value.trim();
+  if(!nick)nick='奶糖';
+  petNickname=nick.substring(0,8);
+  selAnimal=welAnimal;
+  welcomed=true;
+  LS.set('ct_kidname',kidName);
+  LS.set('ct_nick',petNickname);
+  LS.set('ct_animal',selAnimal);
+  LS.set('ct_welcomed',true);
+  document.getElementById('welcomeOverlay').style.display='none';
+  renderHome();
+  spawnConfetti(30);
+  Sound.cel();
+}
+
+// ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
 renderHome();
 renderCal();
+initWelcome();
 </script>
 
 <!-- PWA Service Worker -->
