@@ -2,1509 +2,324 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🐱 我的小目标</title>
-<meta name="theme-color" content="#FF9BB5">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="小目标">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Cat</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
-:root{
-  --cream:#FFF8F0;--peach:#FFE4CC;--pink:#FF9BB5;--rose:#FF6B8A;
-  --lilac:#E8D5F5;--purple:#B57BEE;--gold:#FFD166;--amber:#FFB347;
-  --mint:#C8F5E4;--teal:#4ECBA0;--sky:#D4EEFF;--blue:#6BB8F5;
-  --dark:#3D2B1F;--mid:#8B6B5A;--light:#C4A882;
-  --white:#FFFCF8;--shadow:rgba(61,43,31,0.12);
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;}
-body{
-  font-family:'Nunito',sans-serif;
-  background:var(--cream);
-  color:var(--dark);
-  display:flex;flex-direction:column;
-  max-width:480px;margin:0 auto;
-  position:relative;
-  overflow:hidden;
-}
-
-/* ── SCROLLABLE CONTENT ── */
-.page{display:none;flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 14px 80px;}
-.page.active{display:block;}
-/* custom scrollbar */
-.page::-webkit-scrollbar{width:4px;}
-.page::-webkit-scrollbar-track{background:transparent;}
-.page::-webkit-scrollbar-thumb{background:var(--peach);border-radius:4px;}
-
-/* ── NAV ── */
-.nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:480px;
-  background:var(--white);
-  border-top:2px solid var(--peach);
-  display:flex;z-index:100;
-  box-shadow:0 -4px 20px var(--shadow);
-}
-.nb{flex:1;padding:8px 2px 10px;border:none;background:none;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  font-family:'Nunito',sans-serif;font-size:0.6rem;font-weight:800;color:var(--light);transition:all 0.2s;}
-.nb .ni{font-size:1.45rem;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);}
-.nb.active{color:var(--rose);}
-.nb.active .ni{transform:scale(1.25) translateY(-2px);}
-/* ── CARD ── */
-.card{background:var(--white);border-radius:22px;padding:16px;margin-bottom:12px;
-  box-shadow:0 4px 18px var(--shadow);border:1.5px solid rgba(255,180,150,0.15);}
-.card-title{font-size:1rem;font-weight:900;color:var(--dark);margin-bottom:12px;
-  display:flex;align-items:center;gap:6px;}
-
-/* ── HEADER ── */
-.pg-header{text-align:center;padding:14px 0 10px;position:relative;}
-.pg-header h1{font-size:1.7rem;font-weight:900;color:var(--dark);letter-spacing:1px;}
-.pg-header .sub{font-size:0.8rem;color:var(--mid);font-weight:700;margin-top:2px;}
-
-/* stars pill */
-.stars-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  background:linear-gradient(135deg,var(--gold),var(--amber));
-  border-radius:50px;padding:7px 18px;
-  font-weight:900;color:#7A4500;font-size:0.95rem;
-  box-shadow:0 4px 14px rgba(255,179,0,0.3);
-  margin-top:8px;
-}
-.stars-pill .si{animation:starBounce 1.4s ease-in-out infinite;font-size:1.2rem;}
-@keyframes starBounce{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-5px) rotate(15deg);}}
-
-/* ──────────────────────────────────
-   HOME PAGE
-────────────────────────────────── */
-.task-item{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 13px;border-radius:16px;margin-bottom:8px;
-  background:var(--cream);border:1.5px solid var(--peach);
-  transition:all 0.3s;
-}
-.task-item.habit-t{background:var(--mint);border-color:rgba(78,203,160,0.3);}
-.task-item.done-t{opacity:0.55;}
-.task-item.done-t .t-name{text-decoration:line-through;color:var(--light);}
-.check-btn{
-  width:42px;height:42px;border-radius:50%;
-  border:2.5px solid var(--peach);background:white;
-  cursor:pointer;font-size:1.1rem;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.3s;flex-shrink:0;
-}
-.check-btn.checked{
-  background:linear-gradient(135deg,var(--gold),var(--amber));
-  border-color:var(--amber);
-  animation:checkPop 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
-}
-@keyframes checkPop{0%{transform:scale(0.4);}70%{transform:scale(1.3);}100%{transform:scale(1);}}
-.t-info{flex:1;min-width:0;}
-.t-name{font-size:0.92rem;font-weight:800;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.t-meta{font-size:0.7rem;color:var(--mid);font-weight:700;margin-top:1px;}
-.t-pts{font-size:0.85rem;font-weight:900;color:var(--amber);flex-shrink:0;}
-
-/* badges */
-.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.bdg{text-align:center;padding:9px 4px;border-radius:14px;
-  background:#F8F3EE;border:1.5px solid var(--peach);transition:all 0.3s;}
-.bdg.on{background:linear-gradient(135deg,#FFF9E6,#FFE9A0);border-color:var(--gold);
-  box-shadow:0 3px 10px rgba(255,209,102,0.35);animation:glow 2s ease-in-out infinite;}
-@keyframes glow{0%,100%{box-shadow:0 3px 10px rgba(255,209,102,0.35);}50%{box-shadow:0 3px 20px rgba(255,209,102,0.65);}}
-.bdg .bi{font-size:1.6rem;filter:grayscale(1);opacity:0.3;transition:all 0.3s;}
-.bdg.on .bi{filter:none;opacity:1;}
-.bdg .bl{font-size:0.6rem;font-weight:800;color:var(--light);margin-top:3px;}
-.bdg.on .bl{color:#B8860B;}
-
-/* ──────────────────────────────────
-   PET PAGE
-────────────────────────────────── */
-
-/* Animal select */
-.animal-select-wrap{margin-bottom:14px;}
-.animal-select-title{font-size:0.85rem;font-weight:800;color:var(--mid);margin-bottom:8px;}
-.animal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.an-btn{
-  aspect-ratio:1;border-radius:16px;border:2.5px solid var(--peach);
-  background:var(--cream);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  font-family:'Nunito',sans-serif;
-}
-.an-btn:hover{transform:scale(1.08);}
-.an-btn.selected{
-  border-color:var(--rose);background:linear-gradient(135deg,#FFF0F5,#FFE0EC);
-  box-shadow:0 4px 14px rgba(255,107,138,0.3);transform:scale(1.08);
-}
-.an-icon{font-size:1.8rem;}
-.an-name{font-size:0.6rem;font-weight:800;color:var(--mid);}
-.an-btn.selected .an-name{color:var(--rose);}
-
-/* Pet scene */
-.pet-scene{
-  position:relative;
-  background:linear-gradient(180deg,var(--sky) 0%,var(--sky) 55%,var(--mint) 55%,var(--mint) 100%);
-  border-radius:20px;overflow:hidden;height:230px;
-  margin-bottom:16px;
-  border:2px solid rgba(107,184,245,0.3);
-}
-/* sky deco */
-.scene-cloud{position:absolute;background:white;border-radius:50px;opacity:0.8;}
-.scene-cloud::before,.scene-cloud::after{content:'';position:absolute;background:white;border-radius:50%;}
-.sc1{width:70px;height:22px;top:18px;left:16px;animation:scf 6s ease-in-out infinite;}
-.sc1::before{width:32px;height:32px;top:-16px;left:8px;}
-.sc1::after{width:22px;height:22px;top:-10px;left:30px;}
-.sc2{width:55px;height:18px;top:30px;right:20px;animation:scf 9s ease-in-out infinite reverse;}
-.sc2::before{width:26px;height:26px;top:-13px;left:6px;}
-.sc2::after{width:18px;height:18px;top:-8px;left:24px;}
-@keyframes scf{0%,100%{transform:translateX(0);}50%{transform:translateX(6px);}}
-/* sun */
-.scene-sun{position:absolute;top:10px;right:50px;width:38px;height:38px;
-  background:radial-gradient(circle,#FFE566,#FFB300);border-radius:50%;
-  box-shadow:0 0 18px rgba(255,215,0,0.6);}
-/* ground details */
-.scene-grass{position:absolute;bottom:0;left:0;right:0;height:40%;
-  background:linear-gradient(180deg,#A8E6CF,#7BC67E);}
-.scene-flower{position:absolute;bottom:42%;font-size:1rem;}
-
-/* pet avatar */
-.pet-avatar-wrap{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-60%);
-  display:flex;flex-direction:column;align-items:center;
-  cursor:pointer;user-select:none;
-}
-.pet-avatar{font-size:5.5rem;transition:transform 0.2s;line-height:1;}
-.pet-avatar.idle{animation:petIdle 3s ease-in-out infinite;}
-.pet-avatar.happy{animation:petHappy 0.5s ease-in-out 3;}
-.pet-avatar.eating{animation:petEat 0.4s ease-in-out 4;}
-.pet-avatar.sleeping{animation:petSleep 4s ease-in-out infinite;}
-@keyframes petIdle{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-8px) rotate(2deg);}}
-@keyframes petHappy{0%,100%{transform:scale(1) rotate(0);}25%{transform:scale(1.2) rotate(-8deg);}75%{transform:scale(1.2) rotate(8deg);}}
-@keyframes petEat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px) scale(1.1);}}
-@keyframes petSleep{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-4px) rotate(3deg);}}
-
-.pet-speech{
-  position:absolute;top:-2px;left:50%;transform:translateX(-50%) translateY(-100%);
-  background:white;border-radius:16px;padding:6px 12px;
-  font-size:0.78rem;font-weight:800;color:var(--dark);
-  box-shadow:0 3px 12px var(--shadow);white-space:nowrap;
-  border:1.5px solid var(--peach);
-  opacity:0;transition:opacity 0.3s;pointer-events:none;
-}
-.pet-speech.show{opacity:1;}
-.pet-speech::after{
-  content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:white;
-}
-
-.pet-name-tag{
-  background:rgba(255,255,255,0.9);border-radius:50px;padding:4px 14px;
-  font-size:0.75rem;font-weight:900;color:var(--rose);
-  box-shadow:0 2px 8px var(--shadow);
-  border:1.5px solid var(--peach);
-  margin-top:6px;
-}
-
-/* pet info */
-.pet-info-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.pet-lv{font-size:0.95rem;font-weight:900;color:var(--dark);}
-.pet-mood-badge{
-  font-size:0.75rem;font-weight:800;padding:4px 12px;border-radius:50px;
-  background:var(--lilac);color:var(--purple);
-}
-.xp-row{margin-bottom:4px;}
-.xp-label-row{display:flex;justify-content:space-between;
-  font-size:0.72rem;font-weight:800;color:var(--mid);margin-bottom:5px;}
-.xp-track{background:var(--peach);border-radius:50px;height:14px;overflow:hidden;}
-.xp-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--rose));
-  border-radius:50px;transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1);}
-
-/* interact buttons */
-.interact-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
-.act-btn{
-  padding:10px 4px;border:none;border-radius:14px;cursor:pointer;
-  font-family:'Nunito',sans-serif;font-size:0.72rem;font-weight:800;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
-.act-btn:active{transform:scale(0.93);}
-.act-btn .act-icon{font-size:1.5rem;}
-.btn-feed{background:linear-gradient(135deg,#E8FFF4,#C8F5E4);color:var(--teal);}
-.btn-play{background:linear-gradient(135deg,#FFF0F5,#FFE0EC);color:var(--rose);}
-.btn-sleep{background:linear-gradient(135deg,#EEE8FF,#E0D5FF);color:var(--purple);}
-.btn-bath{background:linear-gradient(135deg,#E8F5FF,#D0E8FF);color:var(--blue);}
-.act-btn:hover{transform:scale(1.08) translateY(-2px);}
-
-/* evolution track */
-.evo-track{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:6px 2px;
-  scrollbar-width:none;}
-.evo-track::-webkit-scrollbar{display:none;}
-.evo-node{display:flex;flex-direction:column;align-items:center;gap:3px;
-  flex-shrink:0;padding:6px 8px;border-radius:14px;
-  background:#F8F3EE;border:1.5px solid var(--peach);min-width:58px;transition:all 0.3s;}
-.evo-node.done{background:linear-gradient(135deg,#FFF9E6,#FFE9A0);border-color:var(--gold);}
-.evo-node.current{background:linear-gradient(135deg,#FFF0F5,#FFE0EC);border-color:var(--rose);
-  box-shadow:0 3px 12px rgba(255,107,138,0.25);}
-.evo-node .en-icon{font-size:1.5rem;filter:grayscale(1);opacity:0.3;}
-.evo-node.done .en-icon,.evo-node.current .en-icon{filter:none;opacity:1;}
-.evo-node .en-lbl{font-size:0.58rem;font-weight:800;color:var(--light);}
-.evo-node.done .en-lbl{color:#B8860B;}
-.evo-node.current .en-lbl{color:var(--rose);}
-.evo-arrow{font-size:0.8rem;color:var(--peach);flex-shrink:0;}
-
-/* ──────────────────────────────────
-   CALENDAR PAGE
-────────────────────────────────── */
-.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.mn-btn{width:34px;height:34px;border:1.5px solid var(--peach);
-  background:var(--cream);border-radius:50%;font-size:1.1rem;
-  cursor:pointer;font-weight:900;transition:all 0.2s;color:var(--dark);}
-.mn-btn:hover{background:var(--peach);}
-.mn-title{font-size:1.05rem;font-weight:900;color:var(--dark);}
-.dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
-.dow{text-align:center;font-size:0.68rem;font-weight:900;color:var(--light);}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cd{aspect-ratio:1;border-radius:11px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  background:#F8F3EE;cursor:pointer;transition:all 0.2s;position:relative;}
-.cd.empty{background:transparent;cursor:default;}
-.cd.today{border:2px solid var(--rose);}
-.cd .dn{font-size:0.75rem;font-weight:900;color:var(--mid);}
-.cd.today .dn{color:var(--rose);}
-.cd .ds{font-size:0.58rem;font-weight:900;color:var(--amber);line-height:1;margin-top:1px;}
-.cd.full{background:linear-gradient(135deg,#FFE566,#FFB300);}
-.cd.full .dn{color:#7A4500;}
-.cd.partial{background:linear-gradient(135deg,#C8F5E4,#A8E6CF);}
-.cd.partial .dn{color:#27AE60;}
-.cd.none{background:#F8F3EE;}
-.month-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
-.stat-box{border-radius:16px;padding:12px 8px;text-align:center;}
-.stat-box .sv{font-size:1.4rem;font-weight:900;}
-.stat-box .sl{font-size:0.68rem;font-weight:800;color:var(--mid);margin-top:2px;}
-.sb-gold{background:linear-gradient(135deg,#FFF9E6,#FFE9A0);}.sb-gold .sv{color:#B8860B;}
-.sb-green{background:linear-gradient(135deg,#E8FFF4,#C8F5E4);}.sb-green .sv{color:var(--teal);}
-.sb-pink{background:linear-gradient(135deg,#FFF0F5,#FFE0EC);}.sb-pink .sv{color:var(--rose);}
-
-/* detail popup */
-.day-popup{
-  position:fixed;inset:0;z-index:150;display:none;
-  align-items:flex-end;justify-content:center;
-}
-.day-popup.show{display:flex;}
-.dp-bg{position:absolute;inset:0;background:rgba(0,0,0,0.25);}
-.dp-sheet{
-  position:relative;background:var(--white);
-  border-radius:28px 28px 0 0;padding:20px 18px 40px;
-  width:100%;max-width:480px;
-  box-shadow:0 -8px 30px var(--shadow);
-  animation:slideUp 0.3s ease-out;
-}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.dp-handle{width:36px;height:4px;background:var(--peach);border-radius:4px;margin:0 auto 14px;}
-.dp-title{font-size:1.05rem;font-weight:900;color:var(--dark);margin-bottom:10px;}
-
-/* ──────────────────────────────────
-   ADMIN PAGE
-────────────────────────────────── */
-.admin-warn{background:linear-gradient(135deg,#FFF9E6,#FFE9A0);border-radius:14px;
-  padding:10px 14px;margin-bottom:12px;font-size:0.82rem;font-weight:700;color:#7A5500;
-  display:flex;align-items:center;gap:6px;}
-.inp{padding:10px 13px;border:2px solid var(--peach);border-radius:12px;
-  font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;outline:none;
-  background:var(--cream);transition:border-color 0.2s;width:100%;}
-.inp:focus{border-color:var(--rose);background:white;}
-.sel{padding:10px 11px;border:2px solid var(--peach);border-radius:12px;
-  font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;
-  background:var(--cream);cursor:pointer;outline:none;}
-.row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
-.btn-add{padding:10px 16px;border:none;border-radius:12px;
-  background:linear-gradient(135deg,var(--pink),var(--rose));
-  color:white;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:900;
-  cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
-.btn-add:hover{transform:scale(1.05);}
-.a-task{display:flex;align-items:center;gap:8px;padding:10px 12px;
-  background:var(--cream);border-radius:14px;margin-bottom:7px;
-  border-left:4px solid var(--blue);}
-.a-task.ht{border-left-color:var(--teal);}
-.at-name{flex:1;font-size:0.88rem;font-weight:800;color:var(--dark);}
-.at-meta{font-size:0.68rem;color:var(--mid);font-weight:700;margin-top:1px;}
-.ic-btn{width:30px;height:30px;border:none;border-radius:8px;
-  cursor:pointer;font-size:0.85rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
-.ic-btn.edit{background:#EEF4FF;color:#5B8DEF;}
-.ic-btn.del{background:#FFF0F0;color:#E75480;}
-.ic-btn:hover{transform:scale(1.12);}
-.btn-wide{width:100%;padding:12px;border:none;border-radius:14px;
-  font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:900;cursor:pointer;
-  transition:all 0.2s;margin-top:6px;}
-.btn-wide:hover{transform:translateY(-1px);}
-.btn-reset{background:linear-gradient(135deg,var(--mint),#A8E6CF);color:var(--teal);}
-.btn-danger{background:linear-gradient(135deg,#FFE0EC,#FFB3C6);color:var(--rose);}
-.badge-row{display:inline-flex;align-items:center;gap:3px;
-  background:var(--peach);border-radius:50px;padding:2px 8px;
-  font-size:0.65rem;font-weight:800;color:var(--mid);}
-
-/* ──────────────────────────────────
-   MODALS
-────────────────────────────────── */
-/* celebration */
-.cel{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity 0.3s;}
-.cel.show{opacity:1;pointer-events:all;}
-.cel-bg{position:absolute;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(5px);}
-.cel-card{
-  position:relative;background:var(--white);border-radius:28px;
-  padding:32px 40px;text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,0.25);
-  animation:celIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  max-width:300px;width:90%;
-}
-@keyframes celIn{0%{transform:scale(0.3) rotate(-8deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
-.cel-emoji{font-size:4.5rem;animation:jmp 0.7s ease-in-out infinite alternate;}
-@keyframes jmp{from{transform:translateY(0) scale(1);}to{transform:translateY(-16px) scale(1.1);}}
-.cel-title{font-size:1.6rem;font-weight:900;color:var(--dark);margin:10px 0 6px;}
-.cel-sub{font-size:0.9rem;font-weight:800;color:var(--amber);}
-.cel-btn{margin-top:16px;padding:12px 30px;background:linear-gradient(135deg,var(--pink),var(--rose));
-  border:none;border-radius:50px;color:white;font-family:'Nunito',sans-serif;
-  font-size:1rem;font-weight:900;cursor:pointer;
-  box-shadow:0 6px 18px rgba(255,107,138,0.4);}
-
-/* pin */
-.pin-modal{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;}
-.pin-modal.show{display:flex;}
-.pm-bg{position:absolute;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(5px);}
-.pm-card{position:relative;background:var(--white);border-radius:26px;
-  padding:28px 32px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.25);
-  min-width:270px;width:85%;}
-.pm-title{font-size:1.1rem;font-weight:900;color:var(--dark);margin-bottom:4px;}
-.pm-sub{font-size:0.8rem;color:var(--mid);font-weight:700;margin-bottom:16px;}
-.pm-inp{width:100%;padding:12px;border:2px solid var(--peach);border-radius:14px;
-  font-size:1.5rem;font-family:'Nunito',sans-serif;font-weight:900;
-  text-align:center;letter-spacing:10px;outline:none;background:var(--cream);}
-.pm-inp:focus{border-color:var(--rose);}
-.pm-err{color:var(--rose);font-size:0.78rem;font-weight:800;margin-top:8px;min-height:18px;}
-.pm-row{display:flex;gap:8px;margin-top:12px;}
-.pm-cancel{flex:1;padding:11px;border:2px solid var(--peach);background:var(--cream);
-  border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;color:var(--mid);}
-.pm-ok{flex:1;padding:11px;border:none;
-  background:linear-gradient(135deg,var(--pink),var(--rose));color:white;
-  border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;}
-
-/* floating fx */
-.float-fx{position:fixed;pointer-events:none;z-index:199;animation:fxUp 1.2s ease-out forwards;}
-@keyframes fxUp{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-160px) scale(0.4);opacity:0;}}
-.confetti{position:fixed;width:10px;height:10px;pointer-events:none;z-index:201;
-  animation:confFall linear forwards;}
-@keyframes confFall{0%{transform:translateY(-10px) rotate(0);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
-.heart-fx{position:fixed;pointer-events:none;z-index:199;font-size:1.6rem;
-  animation:heartPop 1s ease-out forwards;}
-@keyframes heartPop{0%{transform:scale(0.3) translateY(0);opacity:1;}100%{transform:scale(1.3) translateY(-90px);opacity:0;}}
-
-/* empty */
-.empty-s{text-align:center;padding:20px;font-size:0.9rem;font-weight:700;color:var(--light);}
-
-/* ── ACCESS LOCK SCREEN ── */
-.lock-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;}
-.lock-bg{position:absolute;inset:0;background:linear-gradient(135deg,#FFF8F0,#FFE4CC);}
-.lock-card{position:relative;background:var(--white);border-radius:26px;padding:36px 32px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.15);max-width:320px;width:88%;animation:celIn 0.5s ease-out;}
-.lock-emoji{font-size:4rem;margin-bottom:8px;}
-.lock-title{font-size:1.2rem;font-weight:900;color:var(--dark);margin-bottom:6px;}
-.lock-sub{font-size:0.78rem;font-weight:700;color:var(--mid);margin-bottom:22px;}
-.lock-inp{width:100%;padding:14px;border:3px solid var(--peach);border-radius:14px;font-size:2rem;font-family:'Nunito',sans-serif;font-weight:900;text-align:center;letter-spacing:14px;outline:none;background:var(--cream);box-sizing:border-box;}
-.lock-inp:focus{border-color:var(--rose);}
-.lock-err{color:var(--rose);font-size:0.78rem;font-weight:800;margin-top:10px;min-height:20px;}
-.lock-btn{margin-top:16px;padding:14px 48px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,138,0.35);}
-
-/* ── SETTINGS GEAR ── */
-.settings-gear{position:absolute;top:8px;right:12px;font-size:1.4rem;cursor:pointer;opacity:0.5;z-index:10;transition:all 0.3s;}
-.settings-gear:hover{opacity:1;transform:rotate(60deg);}
-
-/* ── SETTINGS PANEL ── */
-.settings-overlay{position:fixed;inset:0;z-index:160;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.25);}
-.settings-overlay.show{display:flex;}
-.settings-sheet{position:relative;background:var(--white);border-radius:28px 28px 0 0;padding:20px 22px 36px;width:100%;max-width:480px;box-shadow:0 -8px 30px var(--shadow);animation:slideUp 0.3s ease-out;}
-.settings-handle{width:36px;height:4px;background:var(--peach);border-radius:4px;margin:0 auto 18px;}
-.settings-title{font-size:1.1rem;font-weight:900;color:var(--dark);margin-bottom:20px;}
-
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
-.setting-icon{font-size:1.4rem;margin-right:8px;}
-.setting-label{font-size:0.95rem;font-weight:800;color:var(--dark);display:flex;align-items:center;}
-
-/* Toggle switch */
-.toggle-switch{position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;}
-.toggle-switch input{display:none;}
-.toggle-track{position:absolute;inset:0;border-radius:28px;background:#E0D5CD;transition:background 0.3s;}
-.toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:white;transition:transform 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.15);}
-.toggle-switch input:checked+.toggle-track{background:var(--teal);}
-.toggle-switch input:checked+.toggle-track::after{transform:translateX(24px);}
-
-/* Volume slider */
-.setting-slider-row{display:flex;align-items:center;gap:8px;padding:6px 0 14px;}
-.slider-icon{font-size:1.1rem;flex-shrink:0;}
-.vol-slider{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--peach);outline:none;}
-.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--rose);cursor:pointer;box-shadow:0 2px 6px rgba(255,107,138,0.35);}
-.vol-slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--rose);cursor:pointer;border:none;}
-
-.setting-divider{height:1px;background:var(--peach);margin:6px 0;}
-
-.settings-close-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;margin-top:16px;}
-
-/* ── WELCOME ONBOARDING ── */
-.welcome-overlay{position:fixed;inset:0;z-index:250;display:none;align-items:center;justify-content:center;}
-.welcome-bg{position:absolute;inset:0;background:rgba(0,0,0,0.3);backdrop-filter:blur(5px);}
-.welcome-card{position:relative;background:var(--white);border-radius:26px;padding:32px 28px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.25);animation:celIn 0.5s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;width:90%;}
-.welcome-emoji{font-size:3.5rem;animation:jmp 0.7s ease-in-out infinite alternate;}
-.welcome-title{font-size:1.3rem;font-weight:900;color:var(--dark);margin:10px 0 4px;}
-.welcome-sub{font-size:0.8rem;font-weight:700;color:var(--mid);margin-bottom:20px;}
-.ws-label{font-size:0.82rem;font-weight:900;color:var(--dark);margin-bottom:8px;text-align:left;}
-.ws-inp{margin-bottom:12px;}
-.wel-btn{padding:12px 36px;border:none;border-radius:50px;background:linear-gradient(135deg,var(--pink),var(--rose));color:white;font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(255,107,138,0.35);}
-.wel-btn-go{background:linear-gradient(135deg,var(--gold),var(--amber));color:#7A4500;box-shadow:0 4px 14px rgba(255,179,0,0.4);padding:14px 48px;font-size:1.05rem;margin-top:8px;}
-.wel-animal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
-.wel-an{
-  aspect-ratio:1;border-radius:14px;border:2.5px solid var(--peach);background:var(--cream);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:all 0.2s;
-  font-family:'Nunito',sans-serif;
-}
-.wel-an.sel{border-color:var(--rose);background:linear-gradient(135deg,#FFF0F5,#FFE0EC);box-shadow:0 3px 10px rgba(255,107,138,0.3);}
-.wel-an .ani{font-size:1.6rem;}
-.wel-an .ann{font-size:0.55rem;font-weight:800;color:var(--mid);}
-.wel-an.sel .ann{color:var(--rose);}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 100vw; height: 100vh; overflow: hidden; background: #c0dc80; cursor: default; user-select: none; }
+  .ground {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 14%;
+    background: linear-gradient(180deg, #6aac3c 0%, #4a8028 100%); border-top: 5px solid #7ec44c;
+  }
+  .ground::before {
+    content: ''; position: absolute; top: -7px; left: 0; right: 0; height: 7px;
+    background: repeating-linear-gradient(90deg, #82c850 0px, #82c850 4px, #6db840 4px, #6db840 8px, #5ca834 8px, #5ca834 12px);
+  }
+  .cloud {
+    position: fixed; top: 6%; width: 5px; height: 5px; background: #f8fafc;
+    box-shadow: 5px -1px 0 0 #f8fafc,10px -1px 0 0 #fcfdfe,15px 0 0 0 #f8fafc,0 5px 0 0 #f8fafc,5px 5px 0 0 #f8fafc,10px 5px 0 0 #f4f6f9,15px 5px 0 0 #f8fafc,20px 3px 0 0 #f0f2f5,5px 10px 0 0 #f0f2f5,10px 10px 0 0 #f0f2f5,15px 10px 0 0 #eef0f4;
+    z-index: 0; pointer-events: none;
+  }
+  .c1 { left: 8%; animation: drift 38s linear infinite; }
+  .c2 { left: 48%; top: 11%; animation: drift 45s linear infinite; animation-delay: -18s; }
+  .c3 { left: 78%; top: 3%; animation: drift 40s linear infinite; animation-delay: -28s; }
+  @keyframes drift { 0% { transform: translateX(0); } 100% { transform: translateX(135vw); } }
+  .px-flower {
+    position: fixed; bottom: 12%; z-index: 2; pointer-events: none; width: 4px; height: 4px;
+    box-shadow: 6px -2px 0 0 #ff7090,14px -2px 0 0 #ff7090,0 6px 0 0 #ff8fa4,10px 6px 0 0 #ffe870,20px 6px 0 0 #ff8fa4,6px 14px 0 0 #ff7090,14px 14px 0 0 #ff7090,9px 20px 0 0 #60a030;
+  }
+  .f1 { left: 7%; } .f2 { left: 22%; bottom: 13%; } .f3 { left: 64%; } .f4 { left: 85%; bottom: 13%; }
+  .cat-container { position: fixed; z-index: 5; pointer-events: none; }
+  .cat-container.clickable { pointer-events: auto; cursor: pointer; }
+  canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .bubble {
+    position: absolute; top: -38px; left: 50%; transform: translateX(-50%);
+    background: #1e0e00; color: #f0d890; border: 2px solid #5c3a20;
+    padding: 5px 10px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold;
+    white-space: nowrap; opacity: 0; transition: opacity 0.15s;
+    pointer-events: none; z-index: 10; box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+  }
+  .bubble.on { opacity: 1; }
+  .bubble::after {
+    content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 8px solid #1e0e00;
+  }
+  .hint {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1e0e00; color: #c8b878; padding: 7px 16px;
+    font-family: 'Courier New', monospace; font-size: 11px; font-weight: bold;
+    z-index: 20; pointer-events: none; transition: opacity 0.4s;
+    border: 2px solid #5c3a20; box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  }
+  .heart {
+    position: fixed; pointer-events: none; z-index: 15;
+    font-family: monospace; font-size: 14px; animation: rise 1s ease-out forwards;
+  }
+  @keyframes rise { 0% { opacity:1; transform: translateY(0) scale(1); } 100% { opacity:0; transform: translateY(-60px) scale(2); } }
 </style>
 </head>
 <body>
-
-<!-- ═══ ACCESS LOCK SCREEN ═══ -->
-<div class="lock-overlay" id="lockScreen">
-  <div class="lock-bg"></div>
-  <div class="lock-card">
-    <div class="lock-emoji">🔐</div>
-    <div class="lock-title">需要密码才能进入</div>
-    <div class="lock-sub">请输入访问密码（默认：1234）</div>
-    <input class="lock-inp" id="lockPinInp" type="password" maxlength="4" inputmode="numeric" placeholder="····"
-      onkeydown="if(event.key==='Enter')unlockApp()">
-    <div class="lock-err" id="lockErr"></div>
-    <button class="lock-btn" onclick="unlockApp()">进入 ✨</button>
-  </div>
+<div class="ground"></div>
+<div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+<div class="px-flower f1"></div><div class="px-flower f2"></div>
+<div class="px-flower f3"></div><div class="px-flower f4"></div>
+<div class="cat-container clickable" id="catContainer">
+  <div class="bubble" id="bubble">MEOW~</div>
+  <canvas id="catCanvas"></canvas>
 </div>
-
-<!-- CELEBRATION -->
-<div class="cel" id="cel">
-  <div class="cel-bg" onclick="closeCel()"></div>
-  <div class="cel-card">
-    <div class="cel-emoji" id="celE">🎉</div>
-    <div class="cel-title" id="celT">太棒了！</div>
-    <div class="cel-sub" id="celS">+1⭐</div>
-    <button class="cel-btn" onclick="closeCel()">继续加油！💪</button>
-  </div>
-</div>
-
-<!-- PIN MODAL -->
-<div class="pin-modal" id="pinModal">
-  <div class="pm-bg"></div>
-  <div class="pm-card">
-    <div class="pm-title">🔐 家长验证</div>
-    <div class="pm-sub">请输入4位管理密码（默认：1234）</div>
-    <input class="pm-inp" id="pinInp" type="password" maxlength="4" inputmode="numeric" placeholder="····"
-      onkeydown="if(event.key==='Enter')checkPin()">
-    <div class="pm-err" id="pinErr"></div>
-    <div class="pm-row">
-      <button class="pm-cancel" onclick="closePin()">取消</button>
-      <button class="pm-ok" onclick="checkPin()">确认</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ SETTINGS PANEL ═══ -->
-<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings(event)">
-  <div class="settings-sheet" onclick="event.stopPropagation()">
-    <div class="settings-handle"></div>
-    <div class="settings-title">⚙️ 声音设置</div>
-
-    <!-- Sound effects -->
-    <div class="setting-row">
-      <span class="setting-icon">🔊</span>
-      <span class="setting-label">音效</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="sfxToggle" onchange="toggleSfx()" checked>
-        <span class="toggle-track"></span>
-      </label>
-    </div>
-    <div class="setting-slider-row">
-      <span class="slider-icon">🔈</span>
-      <input type="range" class="vol-slider" id="sfxVolSlider" min="0" max="100" value="80" oninput="changeSfxVol()">
-      <span class="slider-icon">🔊</span>
-    </div>
-
-    <div class="setting-divider"></div>
-
-    <!-- Background music -->
-    <div class="setting-row">
-      <span class="setting-icon">🎵</span>
-      <span class="setting-label">背景音乐</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="bgmToggle" onchange="toggleBgm()">
-        <span class="toggle-track"></span>
-      </label>
-    </div>
-    <div class="setting-slider-row">
-      <span class="slider-icon">🔈</span>
-      <input type="range" class="vol-slider" id="bgmVolSlider" min="0" max="100" value="30" oninput="changeBgmVol()">
-      <span class="slider-icon">🔊</span>
-    </div>
-
-    <button class="settings-close-btn" onclick="closeSettings()">完成 ✓</button>
-  </div>
-</div>
-
-<!-- DAY DETAIL POPUP -->
-<div class="day-popup" id="dayPopup">
-  <div class="dp-bg" onclick="closeDayPopup()"></div>
-  <div class="dp-sheet">
-    <div class="dp-handle"></div>
-    <div class="dp-title" id="dpTitle">日期详情</div>
-    <div id="dpContent"></div>
-  </div>
-</div>
-
-<!-- ═══ WELCOME ONBOARDING ═══ -->
-<div class="welcome-overlay" id="welcomeOverlay">
-  <div class="welcome-bg"></div>
-  <div class="welcome-card">
-    <div class="welcome-emoji">🌈</div>
-    <div class="welcome-title">欢迎来到小目标！</div>
-    <div class="welcome-sub">让我们先认识一下吧～</div>
-
-    <div class="welcome-step" id="ws1">
-      <div class="ws-label">👋 你的名字</div>
-      <input class="inp ws-inp" id="kidNameInp" placeholder="请输入你的名字（最多10字）" maxlength="10">
-      <button class="wel-btn" onclick="welcomeNext()">下一步 ›</button>
-    </div>
-
-    <div class="welcome-step" id="ws2" style="display:none">
-      <div class="ws-label">🐾 选一只你喜欢的宠物</div>
-      <div class="wel-animal-grid" id="welAnimalGrid"></div>
-      <div class="ws-label" style="margin-top:14px;">✏️ 给它起个名字</div>
-      <input class="inp ws-inp" id="petNickInp" placeholder="宠物名字（最多8字）" maxlength="8">
-      <button class="wel-btn wel-btn-go" onclick="welcomeStart()">开始吧！🎉</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ PAGE: HOME ═══ -->
-<div class="page active" id="page-home">
-  <div class="pg-header">
-    <div class="settings-gear" onclick="openSettings()">⚙️</div>
-    <h1>🌸 <span id="kidNameLabel"></span>的小目标</h1>
-    <div class="sub">每完成一个，猫咪就更开心啦！</div>
-    <div class="stars-pill"><span class="si">⭐</span><span id="starCount">0</span> 颗星星</div>
-  </div>
-  <div class="card">
-    <div class="card-title">🎯 今天要做的事</div>
-    <div id="taskList"><div class="empty-s">📭 家长还没有添加任务哦～</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">🏅 我的勋章</div>
-    <div class="badge-grid" id="badgeGrid"></div>
-  </div>
-</div>
-
-<!-- ═══ PAGE: PET ═══ -->
-<div class="page" id="page-pet">
-  <div class="pg-header">
-    <h1 id="petPageTitle">🐱 我的猫咪</h1>
-    <div class="sub" id="petPageSub">照顾好它，它会越来越可爱！</div>
-  </div>
-
-  <!-- Animal chooser -->
-  <div class="card" id="animalChooserCard">
-    <div class="card-title">🐾 选择你的宠物</div>
-    <div class="animal-grid" id="animalGrid"></div>
-  </div>
-
-  <!-- Pet scene -->
-  <div class="pet-scene" id="petScene">
-    <div class="scene-cloud sc1"></div>
-    <div class="scene-cloud sc2"></div>
-    <div class="scene-sun"></div>
-    <div class="scene-grass"></div>
-    <div class="scene-flower" style="left:12%">🌸</div>
-    <div class="scene-flower" style="left:28%">🌼</div>
-    <div class="scene-flower" style="right:18%">🌺</div>
-    <div class="scene-flower" style="right:8%">🍀</div>
-    <div class="pet-avatar-wrap" id="petAvatarWrap" onclick="tapPet(event)">
-      <div class="pet-speech" id="petSpeech">喵～</div>
-      <div class="pet-avatar idle" id="petAvatar">🐱</div>
-      <div class="pet-name-tag" id="petNameTag">奶糖</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="pet-info-row">
-      <div class="pet-lv" id="petLv">🌟 Lv.1 · 幼猫</div>
-      <div class="pet-mood-badge" id="petMoodBadge">😊 开心</div>
-    </div>
-    <div class="xp-row">
-      <div class="xp-label-row">
-        <span id="xpLeft">经验值</span>
-        <span id="xpRight">0/5 升级</span>
-      </div>
-      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
-    </div>
-    <div class="interact-row">
-      <button class="act-btn btn-feed" onclick="doAction('feed')">
-        <span class="act-icon">🍣</span>喂食
-      </button>
-      <button class="act-btn btn-play" onclick="doAction('play')">
-        <span class="act-icon">🧶</span>玩耍
-      </button>
-      <button class="act-btn btn-sleep" onclick="doAction('sleep')">
-        <span class="act-icon">💤</span>睡觉
-      </button>
-      <button class="act-btn btn-bath" onclick="doAction('bath')">
-        <span class="act-icon">🛁</span>洗澡
-      </button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">🌱 成长进化路线</div>
-    <div class="evo-track" id="evoTrack"></div>
-  </div>
-</div>
-
-<!-- ═══ PAGE: CALENDAR ═══ -->
-<div class="page" id="page-cal">
-  <div class="pg-header">
-    <h1>📅 目标日历</h1>
-    <div class="sub">金色=全部完成 绿色=部分完成</div>
-  </div>
-  <div class="card">
-    <div class="month-nav">
-      <button class="mn-btn" onclick="changeMonth(-1)">‹</button>
-      <div class="mn-title" id="mnTitle"></div>
-      <button class="mn-btn" onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="dow-row" id="dowRow"></div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="month-stat" id="monthStat"></div>
-  </div>
-  <div class="card">
-    <div class="card-title">📊 本月趋势</div>
-    <div id="trendChart" style="height:80px;display:flex;align-items:flex-end;gap:3px;padding:4px 0;"></div>
-    <div style="display:flex;justify-content:space-between;font-size:0.65rem;font-weight:800;color:var(--light);margin-top:4px;" id="trendDates"></div>
-  </div>
-</div>
-
-<!-- ═══ PAGE: ADMIN ═══ -->
-<div class="page" id="page-admin">
-  <div class="pg-header"><h1>🔧 家长后台</h1></div>
-  <div class="admin-warn">⚠️ 此页面为家长专区，请勿让孩子操作</div>
-  <div class="card">
-    <div class="card-title">➕ 添加任务</div>
-    <div class="row">
-      <input class="inp" id="aName" placeholder="任务名称（最多15字）" maxlength="15">
-    </div>
-    <div class="row">
-      <select class="sel" id="aType"><option value="study">📚 学习任务</option><option value="habit">🌱 生活习惯</option></select>
-      <select class="sel" id="aRepeat"><option value="daily">每天重复</option><option value="once">仅今天</option></select>
-      <select class="sel" id="aStars"><option value="1">⭐×1</option><option value="2">⭐×2</option><option value="3">⭐×3</option></select>
-    </div>
-    <button class="btn-add" style="width:100%;padding:12px;" onclick="adminAdd()">✅ 添加任务</button>
-  </div>
-  <div class="card">
-    <div class="card-title">📋 任务管理</div>
-    <div id="adminList"></div>
-    <button class="btn-wide btn-reset" onclick="resetDay()">🌅 重置今日任务（每天早上点一次）</button>
-  </div>
-  <div class="card">
-    <div class="card-title">👨‍👩‍👧 家长鼓励</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;">
-      <button onclick="praiseKid('你今天超级棒！爸妈爱你💕','❤️')" style="padding:9px 14px;border:none;border-radius:50px;background:#FFE9EF;color:#E75480;font-family:Nunito;font-weight:800;cursor:pointer;font-size:0.85rem;">❤️ 超级棒</button>
-      <button onclick="praiseKid('你真的很努力，继续加油！👏','👏')" style="padding:9px 14px;border:none;border-radius:50px;background:#E9F5FF;color:#2980B9;font-family:Nunito;font-weight:800;cursor:pointer;font-size:0.85rem;">👏 很努力</button>
-      <button onclick="praiseKid('爸爸妈妈为你骄傲！🌟','🌟')" style="padding:9px 14px;border:none;border-radius:50px;background:#FFF9E6;color:#B8860B;font-family:Nunito;font-weight:800;cursor:pointer;font-size:0.85rem;">🌟 为你骄傲</button>
-      <button onclick="praiseKid('你是最棒的小宝贝！💪','💪')" style="padding:9px 14px;border:none;border-radius:50px;background:#E9FFE9;color:#27AE60;font-family:Nunito;font-weight:800;cursor:pointer;font-size:0.85rem;">💪 最棒宝贝</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">⚙️ 设置</div>
-    <div class="row">
-      <input class="inp" id="newPin" placeholder="新密码（4位数字）" maxlength="4" inputmode="numeric" type="password">
-      <button class="btn-add" onclick="changePin()">保存密码</button>
-    </div>
-    <button class="btn-wide btn-danger" onclick="resetAll()">⚠️ 清空全部数据</button>
-  </div>
-</div>
-
-<!-- NAV -->
-<nav class="nav">
-  <button class="nb active" onclick="showPage('home',this)"><span class="ni">🏠</span>今日任务</button>
-  <button class="nb" onclick="showPage('pet',this)"><span class="ni">🐾</span>我的宠物</button>
-  <button class="nb" onclick="showPage('cal',this)"><span class="ni">📅</span>月历</button>
-  <button class="nb" onclick="reqPin('admin',this)"><span class="ni">🔧</span>家长后台</button>
-</nav>
+<div class="hint" id="hint">[ CLICK TO MOVE | DRAG TO PICK UP | DOUBLE-CLICK FEED ]</div>
 
 <script>
-// ═══════════════════════════════════════
-//  SOUND ENGINE (Web Audio API — no files needed)
-// ═══════════════════════════════════════
-const Sound=(()=>{
-  let ctx=null;
-  // SFX settings
-  let sfxOn=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_sfx_on'));return v!=null?v:true;}catch{return true;}})();
-  let sfxVol=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_sfx_vol'));return v!=null?v:0.8;}catch{return 0.8;}})();
-  // BGM settings
-  let bgmOn=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_bgm_on'));return v!=null?v:false;}catch{return false;}})();
-  let bgmVol=(()=>{try{const v=JSON.parse(localStorage.getItem('ct_bgm_vol'));return v!=null?v:0.3;}catch{return 0.3;}})();
+(function() {
+  const container = document.getElementById('catContainer');
+  const bubbleEl = document.getElementById('bubble');
+  const hint = document.getElementById('hint');
+  const canvas = document.getElementById('catCanvas');
 
-  // BGM state
-  let bgmTimer=null, bgmGain=null, bgmNoteIdx=0;
-  // Pentatonic scale melody (gentle lullaby)
-  const BGM_NOTES=[
-    {f:262,d:0.4},{f:330,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // C E G E
-    {f:294,d:0.4},{f:392,d:0.6},{f:330,d:0.5},                  // D G E
-    {f:262,d:0.4},{f:330,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // C E G E
-    {f:349,d:0.4},{f:294,d:0.4},{f:262,d:0.8},                  // F D C
-    {f:392,d:0.4},{f:440,d:0.4},{f:392,d:0.3},{f:330,d:0.4},  // G A G E
-    {f:294,d:0.5},{f:262,d:0.6},                                 // D C
-    {f:330,d:0.4},{f:262,d:0.4},{f:392,d:0.4},{f:330,d:0.3},  // E C G E
-    {f:349,d:0.4},{f:294,d:0.4},{f:262,d:0.8},                  // F D C
+  const S = 7;
+  const GW = 44, GH = 50;
+  canvas.width = GW * S; canvas.height = GH * S;
+  canvas.style.width = GW * S + 'px'; canvas.style.height = GH * S + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  // ============== PALETTE ==============
+  const C = {
+    'O':'#f0a050','D':'#d87828','L':'#fce0c8',
+    'W':'#ffffff','w':'#f8f0e8','B':'#100800','S':'#3a1808',
+    'G':'#a0e830','g':'#50a018','P':'#102000',
+    'N':'#f49888','E':'#f0b090','M':'#fcd8b8',
+    'T':'#e89040','t':'#d07828',
+  };
+
+  // ============== PIXEL CAT SPRITE 44x50 ==============
+  // Rows 0-49, each exactly 44 chars
+  // Huge head + expressive face for visible emotion
+  const rows = [
+    '............................................', // 0
+    '............................................', // 1
+    '..................OOO.....................', // 2  left ear tip
+    '.................OEEEO....................', // 3
+    '................OEEEEEO...................', // 4
+    '...............OEEEEEEEO..................', // 5
+    '..............OEEEOOEEEEO.................', // 6
+    '.............OEEEOOOOOEEEO................', // 7  right ear
+    '............OOOOOOOOOOOOOO................', // 8  top of head
+    '..........OOOOOOOOOOOOOOOOO...............', // 9
+    '.........OOOOOOOOOOOOOOOOOOO..............', // 10 forehead
+    '........OOOOOOGGGGGOOOGGGGGOOOOO..........', // 11 === EYES: green iris ===
+    '.......OOOOOOOGGGGGOOOGGGGGOOOOOO.........', // 12 iris clear
+    '.......OOOOOOOGGPPGGOOGGPPGGOOOOOO........', // 13 === PUPILS dark slit ===
+    '.......OOOOOOOGGPPGGOOGGPPGGOOOOOO........', // 14 pupils
+    '.......OOOOOOOOGGGGOOOGGGGOOOOOOO.........', // 15 eye bottom
+    '.......OOOOMMMMMNNNNNNNNNNMMMMMOOOO.......', // 16 === NOSE: pink N in cream M ===
+    '........OOOOMMMMMNNNNNNNNMMMMMOOO.........', // 17 nose+muzzle
+    '.........OOOOOOMMMMNNNNMMMMOOOOO..........', // 18 mouth area
+    '..........OOOOOOOOOMMMMMOOOOOOO...........', // 19 chin
+    '...........OOOOOOOOOOOOOOOOOO.............', // 20 jaw
+    '............OOOOOOOOOOOOOOOO..............', // 21
+    '.............OOOOOOOOOOOOOOO..............', // 22 neck
+    '...........OOOOOOOOOOOOOOOOO..............', // 23
+    '.........OOOOOOOOOLLLLOOOOOOOOOO..........', // 24 body + belly start
+    '.......OOOOOOOOOOOLLLLLOOOOOOOOOOO........', // 25
+    '......OOOOOOOOOOOLLLLLLLOOOOOOOOOOO.......', // 26
+    '.....OOOOOOOOOOOLLLLLLLOOOOOOOOOOOO.......', // 27
+    '....OOOOOOOOOOOLLLLLLLOOOOOOOOOOOO........', // 28
+    '....OOOOOOOOOOOLLLLLLLOOOOOOOOOOOO........', // 29
+    '...OOOOOOOOOOOOLLLLLLLOOOOOOOOOOOO........', // 30
+    '...OOOOOOOOOOOOOLLLLLOOOOOOOOOOOO.........', // 31
+    '...OOOOOOOOOOOOOOOOOOOOOOOOOOOOO..........', // 32
+    '....OOOOOOOOOSOOOOOOOOOOOOOOOO...........', // 33 body bottom
+    '.....OOOOOOOOSSSOOOOOOOOOOOOO............', // 34
+    '....OOOOOOOOOOSSOOOOOOOOOOOO.............', // 35 back leg
+    '....OOOOOOOOOOOSOOOOOOOOOOO..............', // 36
+    '...OOOOOOOOOOOOOOOOOSSSOOOOO.............', // 37 front leg
+    '...OOOOOOOOOOOOOOOOOSSSOOOOO.............', // 38
+    '..OOOOOOOOOOWWSOOOOOSSSOOOO..............', // 39 white paw
+    '..OOOOOOOOOWWWWWSOOOSSSOOOO..............', // 40
+    '.OOOOOOOOOOWWWWWWSSOSSSOOO...............', // 41
+    '.OOOOOOOOOOWWWWWWWSSSSSOOO...............', // 42
+    '..OOOOOOOOWWWWWWWWSSSSOOO................', // 43
+    '..OOOOOOOOWWWWWWWWSSSSOO.................', // 44
+    '...OOOOOOOWWWWWWWWSSSSO..................', // 45
+    '....OOOOOOWWWWWWWWSSSSO..................', // 46
+    '.....OOOOOWWWWWWWWSSSS...................', // 47
+    '......OOOOWWWWWWWWSSSS...................', // 48
+    '.......OOWWWWWWWWSSSS....................', // 49
   ];
 
-  function ensureCtx(){
-    if(!ctx){
-      try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
-    }
-    if(ctx&&ctx.state==='suspended'){ctx.resume();}
-    return !!ctx;
-  }
+  // tail pixels — behind body
+  const tail = [
+    [2,35,'S'],[3,34,'T'],[4,33,'T'],[5,32,'T'],
+    [0,34,'S'],[1,33,'T'],[2,32,'T'],[3,31,'T'],
+    [0,31,'t'],[1,30,'T'],[2,29,'T'],[3,28,'T'],
+    [1,28,'t'],[2,27,'T'],[3,26,'T'],
+    [3,25,'T'],[4,24,'T'],[5,23,'T'],
+    [4,22,'T'],[5,21,'T'],[6,20,'T'],
+    [5,19,'T'],[6,18,'T'],[7,17,'T'],
+    [6,16,'t'],[7,15,'t'],
+  ];
 
-  function tone(freq,dur,type='sine',vol=0.8,delay=0){
-    if(!ensureCtx())return;
-    const v=vol*sfxVol;
-    if(v<=0||!sfxOn)return;
-    try{
-      const t0=ctx.currentTime+(delay/1000);
-      const osc=ctx.createOscillator(),gn=ctx.createGain();
-      osc.type=type;osc.frequency.setValueAtTime(freq,t0);
-      gn.gain.setValueAtTime(v,t0);
-      gn.gain.exponentialRampToValueAtTime(0.001,t0+dur/1000);
-      osc.connect(gn);gn.connect(ctx.destination);
-      osc.start(t0);osc.stop(t0+dur/1000+0.05);
-    }catch(e){}
-  }
-
-  function taskComplete(){
-    ensureCtx();
-    [523,659,784].forEach((f,i)=>tone(f,0.22,'sine',0.7,i*80));
-  }
-  function cel(){
-    ensureCtx();
-    [523,659,784,1047].forEach((f,i)=>tone(f,0.28,'triangle',0.8,i*100));
-  }
-  function feed(){
-    ensureCtx();tone(160,0.1,'sawtooth',0.3);
-    setTimeout(()=>tone(210,0.08,'sawtooth',0.25),60);
-    setTimeout(()=>tone(190,0.08,'sawtooth',0.25),130);
-  }
-  function play(){
-    ensureCtx();tone(660,0.09,'square',0.3);
-    setTimeout(()=>tone(880,0.12,'square',0.32),80);
-    setTimeout(()=>tone(1100,0.14,'triangle',0.35),160);
-  }
-  function sleep(){
-    ensureCtx();tone(440,0.35,'sine',0.3);
-    setTimeout(()=>tone(349,0.45,'sine',0.28),320);
-    setTimeout(()=>tone(261,0.6,'sine',0.25),750);
-  }
-  function bath(){
-    ensureCtx();
-    for(let i=0;i<5;i++){
-      setTimeout(()=>tone(900+Math.random()*600,0.06+Math.random()*0.06,'sine',0.25),i*80);
+  // ============== RENDER ==============
+  function render(flip) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const p = (x, y, k) => {
+      const c = C[k]; if (!c) return;
+      ctx.fillStyle = c;
+      ctx.fillRect((flip ? GW-1-x : x) * S, y * S, S, S);
+    };
+    for (const [tx,ty,tc] of tail) p(tx,ty,tc);
+    for (let y = 0; y < rows.length; y++) {
+      const row = rows[y];
+      for (let x = 0; x < row.length; x++) {
+        const ch = row[x]; if (ch !== '.') p(x, y, ch);
+      }
     }
   }
-  function heart(){
-    ensureCtx();tone(988,0.12,'sine',0.4);
-    setTimeout(()=>tone(1175,0.14,'sine',0.45),100);
+
+  // ============== MOVEMENT ==============
+  let facingRight = true;
+  function setFacing(r) { if (r !== facingRight) { facingRight = r; render(!facingRight); } }
+
+  const WW = GW * S, HH = GH * S;
+  let catX = innerWidth * 0.36, catY = innerHeight * 0.24;
+  let tgtX = catX, tgtY = catY;
+  let idle = true, dragging = false, dragOX = 0, dragOY = 0;
+  let idleTmr = null, moveTmr = null, lastAct = Date.now();
+  let sitting = false, sitTmr = null;
+
+  const msgs = ['MEOW~','MEOW!','PURR...','PET ME!','=^_^=','HAPPY!','<3','PLAY!','NICE~','YAWN...','HELLO!'];
+
+  function upPos() {
+    container.style.left = Math.round(catX) + 'px';
+    container.style.top = Math.round(catY) + 'px';
   }
-
-  // ── Background Music ──
-  function playBgmNote(){
-    if(!bgmOn||!ensureCtx())return;
-    const note=BGM_NOTES[bgmNoteIdx];
-    const v=bgmVol*0.15; // quiet, gentle
-    if(v>0&&bgmOn){
-      try{
-        const t0=ctx.currentTime;
-        const osc=ctx.createOscillator(),gn=ctx.createGain();
-        osc.type='sine';osc.frequency.setValueAtTime(note.f,t0);
-        gn.gain.setValueAtTime(v,t0);
-        gn.gain.exponentialRampToValueAtTime(0.001,t0+note.d*0.9);
-        osc.connect(gn);
-        // Connect through bgmGain if set, else direct
-        if(bgmGain)gn.connect(bgmGain);else gn.connect(ctx.destination);
-        osc.start(t0);osc.stop(t0+note.d);
-      }catch(e){}
-    }
-    bgmNoteIdx=(bgmNoteIdx+1)%BGM_NOTES.length;
-    if(bgmOn)bgmTimer=setTimeout(playBgmNote,BGM_NOTES[bgmNoteIdx].d*1100);
+  function bubble(m) {
+    bubbleEl.textContent = m || msgs[~~(Math.random()*msgs.length)];
+    bubbleEl.classList.add('on');
+    clearTimeout(bubbleEl._t);
+    bubbleEl._t = setTimeout(() => bubbleEl.classList.remove('on'), 1800);
   }
-
-  function startBgm(){
-    ensureCtx();
-    if(!bgmGain){
-      bgmGain=ctx.createGain();
-      bgmGain.gain.value=1;
-      bgmGain.connect(ctx.destination);
-    }
-    bgmNoteIdx=0;
-    playBgmNote();
-  }
-
-  function stopBgm(){
-    if(bgmTimer){clearTimeout(bgmTimer);bgmTimer=null;}
-  }
-
-  function testBeep(){
-    ensureCtx();tone(880,0.1,'sine',0.6);
-    setTimeout(()=>tone(1100,0.12,'sine',0.6),120);
-  }
-
-  return{
-    taskComplete,cel,feed,play,sleep,bath,heart,testBeep,
-    init(){ensureCtx();},
-    // SFX getters/setters
-    get sfxOn(){return sfxOn;},
-    set sfxOn(v){sfxOn=v;localStorage.setItem('ct_sfx_on',JSON.stringify(v));},
-    get sfxVol(){return sfxVol;},
-    set sfxVol(v){sfxVol=v;localStorage.setItem('ct_sfx_vol',JSON.stringify(v));},
-    // BGM getters/setters
-    get bgmOn(){return bgmOn;},
-    set bgmOn(v){
-      bgmOn=v;
-      localStorage.setItem('ct_bgm_on',JSON.stringify(v));
-      if(v){startBgm();}else{stopBgm();}
-    },
-    get bgmVol(){return bgmVol;},
-    set bgmVol(v){
-      bgmVol=v;
-      localStorage.setItem('ct_bgm_vol',JSON.stringify(v));
-      if(bgmGain)bgmGain.gain.value=v;
-    },
-    stopBgm
-  };
-})();
-// Pre-create AudioContext on any user gesture (mobile browsers require this)
-function audioBootstrap(){
-  Sound.init();
-}
-document.addEventListener('touchstart',audioBootstrap,{once:true});
-document.addEventListener('click',audioBootstrap,{once:true});
-
-// ═══════════════════════════════════════
-//  DATA
-// ═══════════════════════════════════════
-const LS = {
-  get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d;}catch{return d;}},
-  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
-};
-let tasks      = LS.get('ct_tasks',[]);
-let stars      = LS.get('ct_stars',0);
-let calData    = LS.get('ct_cal',{});
-let petXP      = LS.get('ct_xp',0);
-let petLog     = LS.get('ct_log',[]);
-let adminPin   = LS.get('ct_pin','1234');
-let selAnimal  = LS.get('ct_animal','cat');
-let petNickname= LS.get('ct_nick','奶糖');
-let kidName    = LS.get('ct_kidname','');
-let welcomed   = LS.get('ct_welcomed',false);
-let curMonth   = new Date();
-let welAnimal  = 'cat'; // temp selection during onboarding
-
-// ═══════════════════════════════════════
-//  ANIMAL CONFIGS
-// ═══════════════════════════════════════
-const ANIMALS = {
-  cat:{
-    icon:'🐱', name:'猫咪', pageTitle:'🐱 我的猫咪', pageSub:'喵～来陪我玩吧！',
-    food:'🍣', foodName:'猫粮',
-    moods:['😿 有点委屈','😐 一般般','😊 开心','😸 很开心','🥰 超级爱你'],
-    speeches:{idle:['喵～','快来陪我玩！','我想吃猫粮～','你看我，我在看你','喵喵喵？'],
-      feed:['好吃好吃！','谢谢铲屎官！','还有吗？','咕噜咕噜～'],
-      play:['太好玩了！','再来再来！','我抓到啦！','喵哈哈！'],
-      sleep:['Zzz...','呼噜呼噜...','好困啊...'],
-      bath:['不要不要！','我会自己舔毛的！','救命啊！','流氓！']},
-    evos:[
-      {xp:0,  icon:'🥚', name:'蛋蛋'},
-      {xp:5,  icon:'🐱', name:'幼猫'},
-      {xp:15, icon:'😸', name:'小猫'},
-      {xp:30, icon:'🐈', name:'猫猫'},
-      {xp:50, icon:'🐈‍⬛',name:'酷猫'},
-      {xp:80, icon:'😼', name:'成年猫'},
-      {xp:120,icon:'🦁', name:'猫王'},
-      {xp:200,icon:'🐉', name:'龙猫传说'},
-    ]
-  },
-  dog:{
-    icon:'🐶', name:'小狗', pageTitle:'🐶 我的小狗', pageSub:'汪汪！我好喜欢你！',
-    food:'🦴', foodName:'狗粮',
-    moods:['😢 有点难过','😐 一般般','😊 开心','🐕 很开心','🥰 超级爱你'],
-    speeches:{idle:['汪！','陪我玩嘛！','我要吃骨头！','看我看我！','汪汪汪？'],
-      feed:['好吃！汪！','谢谢！','还有还有！','呼哧呼哧！'],
-      play:['耶！','追到了！','再玩一次！','汪哈哈！'],
-      sleep:['Zzz...呼...','好困的汪...'],
-      bath:['不嘛不嘛！','汪！放我下来！','救命汪！','啊啊啊！']},
-    evos:[
-      {xp:0,  icon:'🥚', name:'蛋蛋'},
-      {xp:5,  icon:'🐶', name:'幼犬'},
-      {xp:15, icon:'🐕', name:'小狗'},
-      {xp:30, icon:'🦮', name:'导盲犬'},
-      {xp:50, icon:'🐕‍🦺',name:'工作犬'},
-      {xp:80, icon:'🐺', name:'头狼'},
-      {xp:120,icon:'🦊', name:'神狐'},
-      {xp:200,icon:'🐲', name:'龙犬传说'},
-    ]
-  },
-  rabbit:{
-    icon:'🐰', name:'兔兔', pageTitle:'🐰 我的兔兔', pageSub:'蹦蹦跳跳来找你啦！',
-    food:'🥕', foodName:'胡萝卜',
-    moods:['😢 有点委屈','😐 一般般','😊 开心','🐰 很开心','🥰 超级爱你'],
-    speeches:{idle:['咦？','来摸我！','我要吃萝卜！','蹦蹦蹦！','嗅嗅～'],
-      feed:['好甜！','谢谢你！','咔嚓咔嚓！','还有吗？'],
-      play:['蹦跳！','好好玩！','再来！','哈哈哈！'],
-      sleep:['Zzz...','呼呼...','好困...'],
-      bath:['啊啊！','不要！','好冷！','放我下来！']},
-    evos:[
-      {xp:0,  icon:'🥚', name:'蛋蛋'},
-      {xp:5,  icon:'🐰', name:'小兔'},
-      {xp:15, icon:'🐇', name:'兔兔'},
-      {xp:30, icon:'🌸', name:'花兔'},
-      {xp:50, icon:'🦋', name:'蝴蝶兔'},
-      {xp:80, icon:'🌈', name:'彩虹兔'},
-      {xp:120,icon:'✨', name:'星光兔'},
-      {xp:200,icon:'🦄', name:'独角兔'},
-    ]
-  },
-  panda:{
-    icon:'🐼', name:'熊猫', pageTitle:'🐼 我的熊猫', pageSub:'我饿了，要吃竹子！',
-    food:'🎋', foodName:'竹子',
-    moods:['😿 有点难过','😐 在吃竹子','😊 吃饱了','🐼 很满足','🥰 超级开心'],
-    speeches:{idle:['吃！','竹子！竹子！','我在想吃什么...','哦～','困困...'],
-      feed:['嗯！好吃！','竹子最棒！','再来一根！','咔嚓嚓！'],
-      play:['滚！','哦嚯！','再滚一次！','哈哈！'],
-      sleep:['呼噜...','Zzz...','吃饱了睡...'],
-      bath:['不要嘛！','我不脏！','啊啊！','放开我！']},
-    evos:[
-      {xp:0,  icon:'🥚', name:'蛋蛋'},
-      {xp:5,  icon:'🐼', name:'小熊猫'},
-      {xp:15, icon:'🐻', name:'熊宝宝'},
-      {xp:30, icon:'🌿', name:'竹林熊'},
-      {xp:50, icon:'⭐', name:'星熊'},
-      {xp:80, icon:'🌙', name:'月光熊'},
-      {xp:120,icon:'☀️', name:'太阳熊'},
-      {xp:200,icon:'🐉', name:'龙熊传说'},
-    ]
-  }
-};
-
-const BADGES = [
-  {i:'🍭',n:'棒棒糖',  t:1},  {i:'⭐',n:'小星星',  t:3},
-  {i:'🎈',n:'红气球',  t:5},  {i:'🌈',n:'彩虹糖',  t:8},
-  {i:'🦋',n:'花蝴蝶',  t:12}, {i:'🎵',n:'小铃铛',  t:18},
-  {i:'🏰',n:'大城堡',  t:28}, {i:'🦄',n:'独角兽',  t:45},
-];
-const CELS = [
-  {e:'🎉',t:'任务完成啦！'},{e:'⭐',t:'你太棒了！'},
-  {e:'🎊',t:'超级厉害！'}, {e:'🌈',t:'做得很好！'},
-  {e:'✨',t:'小英雄！'},
-];
-
-// ═══════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════
-function todayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function getAnimal(){return ANIMALS[selAnimal]||ANIMALS.cat;}
-function getEvo(xp,evos){let e=evos[0];for(const v of evos)if(xp>=v.xp)e=v;return e;}
-function getNextEvo(xp,evos){for(const v of evos)if(v.xp>xp)return v;return null;}
-
-// ═══════════════════════════════════════
-//  PAGE NAV
-// ═══════════════════════════════════════
-function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
-  if(id==='home')  renderHome();
-  if(id==='pet')   renderPet();
-  if(id==='cal')   renderCal();
-  if(id==='admin') renderAdmin();
-}
-
-// ═══════════════════════════════════════
-//  ACCESS LOCK
-// ═══════════════════════════════════════
-function unlockApp(){
-  if(document.getElementById('lockPinInp').value===adminPin){
-    sessionStorage.setItem('ct_unlocked','1');
-    document.getElementById('lockScreen').style.display='none';
-    document.getElementById('lockErr').textContent='';
-  }else{
-    document.getElementById('lockErr').textContent='密码错误，请重试';
-  }
-}
-
-// ═══════════════════════════════════════
-//  PIN
-// ═══════════════════════════════════════
-let pinTarget=null,pinBtn=null;
-function reqPin(t,b){
-  pinTarget=t;pinBtn=b;
-  document.getElementById('pinInp').value='';
-  document.getElementById('pinErr').textContent='';
-  document.getElementById('pinModal').classList.add('show');
-  setTimeout(()=>document.getElementById('pinInp').focus(),100);
-}
-function closePin(){document.getElementById('pinModal').classList.remove('show');}
-// ── Settings Panel ──
-function openSettings(){
-  document.getElementById('settingsOverlay').classList.add('show');
-  // Sync UI with current state
-  document.getElementById('sfxToggle').checked=Sound.sfxOn;
-  document.getElementById('sfxVolSlider').value=Math.round(Sound.sfxVol*100);
-  document.getElementById('bgmToggle').checked=Sound.bgmOn;
-  document.getElementById('bgmVolSlider').value=Math.round(Sound.bgmVol*100);
-}
-function closeSettings(e){
-  if(e&&e.target!==e.currentTarget)return;
-  document.getElementById('settingsOverlay').classList.remove('show');
-}
-function toggleSfx(){
-  Sound.sfxOn=document.getElementById('sfxToggle').checked;
-  if(Sound.sfxOn)Sound.testBeep();
-}
-function changeSfxVol(){
-  Sound.sfxVol=parseInt(document.getElementById('sfxVolSlider').value)/100;
-}
-function toggleBgm(){
-  Sound.bgmOn=document.getElementById('bgmToggle').checked;
-}
-function changeBgmVol(){
-  Sound.bgmVol=parseInt(document.getElementById('bgmVolSlider').value)/100;
-}
-function checkPin(){
-  if(document.getElementById('pinInp').value===adminPin){closePin();showPage(pinTarget,pinBtn);}
-  else document.getElementById('pinErr').textContent='密码错误，请重试';
-}
-function changePin(){
-  const v=document.getElementById('newPin').value;
-  if(!/^\d{4}$/.test(v)){alert('请输入4位数字');return;}
-  adminPin=v;LS.set('ct_pin',adminPin);
-  document.getElementById('newPin').value='';
-  alert('密码已修改！');
-}
-
-// ═══════════════════════════════════════
-//  HOME
-// ═══════════════════════════════════════
-function renderHome(){
-  document.getElementById('starCount').textContent=stars;
-  document.getElementById('kidNameLabel').textContent=kidName||'我';
-  const list=document.getElementById('taskList');
-  if(!tasks.length){list.innerHTML='<div class="empty-s">📭 家长还没有添加任务哦～</div>';return;}
-  list.innerHTML=tasks.map(t=>`
-    <div class="task-item ${t.type==='habit'?'habit-t':''} ${t.done?'done-t':''}">
-      <button class="check-btn ${t.done?'checked':''}" onclick="completeTask(${t.id})">
-        ${t.done?'⭐':(t.type==='habit'?'🌱':'📚')}
-      </button>
-      <div class="t-info">
-        <div class="t-name">${t.name}</div>
-        <div class="t-meta">${t.type==='study'?'📚 学习':'🌱 习惯'} · ${t.stars||1}⭐/次</div>
-      </div>
-      <div class="t-pts">${t.done?`+${t.stars||1}⭐`:''}</div>
-    </div>`).join('');
-  // badges
-  document.getElementById('badgeGrid').innerHTML=BADGES.map(b=>`
-    <div class="bdg ${stars>=b.t?'on':''}">
-      <div class="bi">${b.i}</div>
-      <div class="bl">${b.n}</div>
-    </div>`).join('');
-}
-
-function completeTask(id){
-  const t=tasks.find(x=>x.id===id);
-  if(!t||t.done)return;
-  t.done=true;
-  const pts=t.stars||1;
-  stars+=pts; petXP+=pts;
-  LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);LS.set('ct_xp',petXP);
-  // cal
-  const dk=todayKey();
-  if(!calData[dk])calData[dk]={done:0,total:tasks.length,stars:0};
-  calData[dk].done++;calData[dk].stars+=pts;calData[dk].total=tasks.length;
-  LS.set('ct_cal',calData);
-  // log
-  petLog.unshift({d:new Date().toLocaleDateString('zh-CN'),t:`完成「${t.name}」+${pts}XP`});
-  if(petLog.length>30)petLog.pop();
-  LS.set('ct_log',petLog);
-  renderHome();
-  showCel(t.name,pts);
-  spawnConfetti();
-  floatFx('⭐',null);
-  Sound.taskComplete();
-}
-
-// ═══════════════════════════════════════
-//  PET
-// ═══════════════════════════════════════
-function renderPet(){
-  const a=getAnimal();
-  // page title
-  document.getElementById('petPageTitle').textContent=a.pageTitle;
-  document.getElementById('petPageSub').textContent=a.pageSub;
-  // animal chooser
-  const ag=document.getElementById('animalGrid');
-  ag.innerHTML=Object.entries(ANIMALS).map(([k,v])=>`
-    <button class="an-btn ${selAnimal===k?'selected':''}" onclick="selectAnimal('${k}')">
-      <span class="an-icon">${v.icon}</span>
-      <span class="an-name">${v.name}</span>
-    </button>`).join('');
-  // evo
-  const evo=getEvo(petXP,a.evos);
-  const next=getNextEvo(petXP,a.evos);
-  const idx=a.evos.indexOf(evo);
-  // avatar
-  document.getElementById('petAvatar').textContent=evo.icon;
-  document.getElementById('petNameTag').textContent=petNickname;
-  document.getElementById('petLv').textContent=`🌟 Lv.${idx+1} · ${evo.name}`;
-  // mood
-  const moodIdx=Math.min(Math.floor(petXP/10),a.moods.length-1);
-  document.getElementById('petMoodBadge').textContent=a.moods[moodIdx]||a.moods[a.moods.length-1];
-  // xp bar
-  if(next){
-    const prev=a.evos[idx];
-    const pct=((petXP-prev.xp)/(next.xp-prev.xp)*100).toFixed(1);
-    document.getElementById('xpFill').style.width=pct+'%';
-    document.getElementById('xpRight').textContent=`${petXP}/${next.xp} 升级`;
-  } else {
-    document.getElementById('xpFill').style.width='100%';
-    document.getElementById('xpRight').textContent='已最终进化！';
-  }
-  document.getElementById('xpLeft').textContent='经验值';
-  // evo track
-  document.getElementById('evoTrack').innerHTML=a.evos.map((e,i)=>`
-    ${i>0?'<span class="evo-arrow">›</span>':''}
-    <div class="evo-node ${petXP>=e.xp?'done':''} ${petXP>=e.xp&&(i===a.evos.length-1||petXP<a.evos[i+1]?.xp)?'current':''}">
-      <span class="en-icon">${e.icon}</span>
-      <span class="en-lbl">${e.name}</span>
-    </div>`).join('');
-  // idle speech
-  showSpeech(rand(a.speeches.idle));
-}
-
-function selectAnimal(k){
-  selAnimal=k;
-  LS.set('ct_animal',k);
-  // nickname prompt
-  const nick=prompt(`给你的${ANIMALS[k].name}起个名字吧～`,petNickname);
-  if(nick&&nick.trim())petNickname=nick.trim().substring(0,8);
-  LS.set('ct_nick',petNickname);
-  renderPet();
-  spawnConfetti();
-  Sound.cel();
-}
-
-let speechTimer=null;
-function showSpeech(msg){
-  const el=document.getElementById('petSpeech');
-  el.textContent=msg;el.classList.add('show');
-  clearTimeout(speechTimer);
-  speechTimer=setTimeout(()=>el.classList.remove('show'),2800);
-}
-
-function tapPet(e){
-  const a=getAnimal();
-  showSpeech(rand(a.speeches.idle));
-  heartFx(e.clientX,e.clientY);
-  Sound.heart();
-  const av=document.getElementById('petAvatar');
-  av.className='pet-avatar happy';
-  setTimeout(()=>av.className='pet-avatar idle',1500);
-}
-
-function doAction(type){
-  const a=getAnimal();
-  const msgs=a.speeches[type]||a.speeches.idle;
-  showSpeech(rand(msgs));
-  const av=document.getElementById('petAvatar');
-  av.className=`pet-avatar ${type==='sleep'?'sleeping':type==='feed'?'eating':'happy'}`;
-  setTimeout(()=>av.className='pet-avatar idle',2000);
-  if(type==='feed'){petXP+=1;Sound.feed();}
-  if(type==='play'){petXP+=1;Sound.play();}
-  if(type==='feed'||type==='play'){
-    LS.set('ct_xp',petXP);
-    floatFx(type==='feed'?a.food:'🎉',null);
-    setTimeout(renderPet,300);
-  }
-  if(type==='bath'){floatFx('🫧',null);Sound.bath();}
-  if(type==='sleep'){floatFx('💤',null);Sound.sleep();}
-  spawnConfetti(12);
-}
-
-// ═══════════════════════════════════════
-//  CALENDAR
-// ═══════════════════════════════════════
-function changeMonth(d){curMonth=new Date(curMonth.getFullYear(),curMonth.getMonth()+d,1);renderCal();}
-
-function renderCal(){
-  const y=curMonth.getFullYear(),m=curMonth.getMonth();
-  document.getElementById('mnTitle').textContent=`${y}年 ${m+1}月`;
-  const dows=['日','一','二','三','四','五','六'];
-  document.getElementById('dowRow').innerHTML=dows.map(d=>`<div class="dow">${d}</div>`).join('');
-  const first=new Date(y,m,1).getDay();
-  const days=new Date(y,m+1,0).getDate();
-  const today=new Date();
-  let html='';
-  for(let i=0;i<first;i++)html+=`<div class="cd empty"></div>`;
-  let totalS=0,fullDays=0,activeDays=0;
-  const trendData=[];
-  for(let d=1;d<=days;d++){
-    const dk=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const rec=calData[dk];
-    const isT=(y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate());
-    let cls='cd'+(isT?' today':'');
-    let inner=`<div class="dn">${d}</div>`;
-    let pct=0;
-    if(rec&&rec.total>0){
-      activeDays++;pct=rec.done/rec.total;
-      totalS+=rec.stars||0;
-      if(rec.done>=rec.total){cls+=' full';fullDays++;}
-      else if(rec.done>0) cls+=' partial';
-      inner+=`<div class="ds">${rec.stars}⭐</div>`;
-    }
-    trendData.push({d,pct});
-    html+=`<div class="${cls}" onclick="showDayDetail('${dk}',${d})">${inner}</div>`;
-  }
-  document.getElementById('calGrid').innerHTML=html;
-  document.getElementById('monthStat').innerHTML=`
-    <div class="stat-box sb-gold"><div class="sv">${totalS}</div><div class="sl">本月星星</div></div>
-    <div class="stat-box sb-green"><div class="sv">${fullDays}</div><div class="sl">全完成天</div></div>
-    <div class="stat-box sb-pink"><div class="sv">${activeDays}</div><div class="sl">有记录天</div></div>`;
-  // trend chart
-  const last14=trendData.slice(-14);
-  const maxH=64;
-  document.getElementById('trendChart').innerHTML=last14.map(x=>{
-    const h=Math.max(4,Math.round(x.pct*maxH));
-    const col=x.pct>=1?'var(--gold)':x.pct>0?'var(--teal)':'var(--peach)';
-    return `<div style="flex:1;height:${h}px;background:${col};border-radius:4px 4px 0 0;transition:height 0.5s;"></div>`;
-  }).join('');
-  document.getElementById('trendDates').innerHTML=last14.map(x=>`<span>${x.d}</span>`).join('');
-}
-
-function showDayDetail(dk,d){
-  const rec=calData[dk];
-  document.getElementById('dpTitle').textContent=`${curMonth.getMonth()+1}月${d}日`;
-  if(!rec){
-    document.getElementById('dpContent').innerHTML=`<div class="empty-s">这天还没有记录哦～</div>`;
-  } else {
-    document.getElementById('dpContent').innerHTML=`
-      <div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 0;">
-        <div style="background:var(--peach);border-radius:12px;padding:10px 16px;font-weight:800;font-size:0.9rem;color:var(--dark);">
-          完成 <b>${rec.done}</b>/${rec.total} 项
-        </div>
-        <div style="background:linear-gradient(135deg,#FFF9E6,#FFE9A0);border-radius:12px;padding:10px 16px;font-weight:800;font-size:0.9rem;color:#B8860B;">
-          获得 <b>${rec.stars}</b> ⭐
-        </div>
-        ${rec.done>=rec.total?'<div style="background:linear-gradient(135deg,#C8F5E4,#A8E6CF);border-radius:12px;padding:10px 16px;font-weight:800;font-size:0.9rem;color:var(--teal);">🏆 全部完成！</div>':''}
-      </div>`;
-  }
-  document.getElementById('dayPopup').classList.add('show');
-}
-function closeDayPopup(){document.getElementById('dayPopup').classList.remove('show');}
-
-// ═══════════════════════════════════════
-//  ADMIN
-// ═══════════════════════════════════════
-function renderAdmin(){
-  const list=document.getElementById('adminList');
-  if(!tasks.length){list.innerHTML='<div class="empty-s">还没有任务，快来添加吧！</div>';return;}
-  list.innerHTML=tasks.map(t=>`
-    <div class="a-task ${t.type==='habit'?'ht':''}">
-      <div style="flex:1;">
-        <div class="at-name">${t.name}</div>
-        <div class="at-meta">${t.type==='study'?'📚 学习':'🌱 习惯'} · ${t.stars||1}⭐
-          <span class="badge-row">${t.repeat==='daily'?'每天':'仅今天'}</span>
-        </div>
-      </div>
-      <button class="ic-btn edit" onclick="adminEdit(${t.id})">✏️</button>
-      <button class="ic-btn del" onclick="adminDel(${t.id})">🗑️</button>
-    </div>`).join('');
-}
-function adminAdd(){
-  const name=document.getElementById('aName').value.trim();
-  if(!name)return;
-  tasks.push({id:Date.now(),name,type:document.getElementById('aType').value,
-    repeat:document.getElementById('aRepeat').value,stars:parseInt(document.getElementById('aStars').value),done:false});
-  document.getElementById('aName').value='';
-  LS.set('ct_tasks',tasks);renderAdmin();
-}
-function adminDel(id){
-  if(!confirm('确认删除？'))return;
-  tasks=tasks.filter(t=>t.id!==id);LS.set('ct_tasks',tasks);renderAdmin();
-}
-function adminEdit(id){
-  const t=tasks.find(x=>x.id===id);if(!t)return;
-  const n=prompt('修改任务名称：',t.name);
-  if(n&&n.trim()){t.name=n.trim().substring(0,15);LS.set('ct_tasks',tasks);renderAdmin();}
-}
-function resetDay(){
-  if(!confirm('确认重置今日任务？'))return;
-  const dk=todayKey();
-  if(!calData[dk])calData[dk]={done:0,total:tasks.length,stars:0};
-  calData[dk].total=tasks.length;LS.set('ct_cal',calData);
-  tasks.forEach(t=>{if(t.repeat==='daily')t.done=false;});
-  tasks=tasks.filter(t=>t.repeat!=='once'||!t.done);
-  LS.set('ct_tasks',tasks);renderAdmin();
-  alert('✅ 已重置！新的一天开始啦 🌅');
-}
-function resetAll(){
-  if(!confirm('确认清空所有数据？不可恢复！'))return;
-  ['ct_tasks','ct_stars','ct_cal','ct_xp','ct_log','ct_pin','ct_animal','ct_nick','ct_kidname','ct_welcomed','ct_sfx_on','ct_sfx_vol','ct_bgm_on','ct_bgm_vol'].forEach(k=>localStorage.removeItem(k));
-  tasks=[];stars=0;calData={};petXP=0;petLog=[];adminPin='1234';selAnimal='cat';petNickname='奶糖';kidName='';welcomed=false;
-  Sound.sfxOn=true;Sound.sfxVol=0.8;Sound.bgmOn=false;Sound.bgmVol=0.3;Sound.stopBgm();
-  sessionStorage.removeItem('ct_unlocked');
-  LS.set('ct_tasks',tasks);LS.set('ct_stars',stars);
-  renderAdmin();renderHome();alert('已清空！重新打开页面会再次显示欢迎引导～');
-}
-function praiseKid(msg,e){
-  showSimpleCel(e,'爸妈说：',msg);spawnConfetti();
-}
-
-// ═══════════════════════════════════════
-//  CELEBRATIONS & FX
-// ═══════════════════════════════════════
-function showCel(name,pts){
-  const c=rand(CELS);
-  document.getElementById('celE').textContent=c.e;
-  document.getElementById('celT').textContent=c.t;
-  document.getElementById('celS').textContent=`「${name}」完成！+${pts}⭐（共${stars}颗）`;
-  document.getElementById('cel').classList.add('show');
-  Sound.cel();
-}
-function showSimpleCel(e,t,s){
-  document.getElementById('celE').textContent=e;
-  document.getElementById('celT').textContent=t;
-  document.getElementById('celS').textContent=s;
-  document.getElementById('cel').classList.add('show');
-}
-function closeCel(){document.getElementById('cel').classList.remove('show');}
-
-function spawnConfetti(n=40){
-  const cols=['#FF9BB5','#FFD166','#74B9FF','#55EFC4','#C49FE6','#FFB347','#FF6B8A'];
-  for(let i=0;i<n;i++){
-    const el=document.createElement('div');
-    el.className='confetti';
-    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${rand(cols)};animation-duration:${1+Math.random()*1.5}s;animation-delay:${Math.random()*0.4}s;border-radius:${Math.random()>.5?'50%':'3px'};`;
+  function hearts() {
+    const el = document.createElement('div'); el.className = 'heart';
+    el.textContent = ['♥','♡','✦','♥'][~~(Math.random()*4)];
+    el.style.left = (catX+WW/2-4)+'px'; el.style.top = (catY-6)+'px';
     document.body.appendChild(el);
-    setTimeout(()=>el.remove(),2500);
+    setTimeout(() => el.remove(), 1100);
   }
-}
-function floatFx(emoji,e){
-  for(let i=0;i<5;i++){
-    setTimeout(()=>{
-      const el=document.createElement('div');
-      el.className='float-fx';
-      el.style.cssText=`left:${25+Math.random()*50}vw;bottom:${15+Math.random()*20}vh;font-size:${1.5+Math.random()}rem;`;
-      el.textContent=emoji;
-      document.body.appendChild(el);
-      setTimeout(()=>el.remove(),1200);
-    },i*100);
+  function setTgt(x, y) {
+    tgtX = Math.max(0, Math.min(x, innerWidth-WW));
+    tgtY = Math.max(0, Math.min(y, innerHeight-HH));
+    if (tgtX > catX+3) setFacing(true); else if (tgtX < catX-3) setFacing(false);
   }
-}
-function heartFx(x,y){
-  const hearts=['💖','💕','❤️','💗'];
-  for(let i=0;i<4;i++){
-    setTimeout(()=>{
-      const el=document.createElement('div');
-      el.className='heart-fx';
-      el.style.cssText=`left:${x-20+Math.random()*40-20}px;top:${y-20}px;`;
-      el.textContent=rand(hearts);
-      document.body.appendChild(el);
-      setTimeout(()=>el.remove(),1000);
-    },i*80);
+  function goTo(x, y) {
+    setTgt(x-WW/2, y-HH/2+10); idle = false; stopSit();
+    clearTimeout(idleTmr); idleTmr = setTimeout(() => { idle = true; maybeSit(); }, 3500);
   }
-}
+  function randMove() {
+    if (dragging||sitting) return;
+    setTgt(catX+(Math.random()-.5)*420, catY+(Math.random()-.5)*230);
+    idle = false; clearTimeout(idleTmr);
+    idleTmr = setTimeout(() => { idle = true; maybeSit(); }, 3500);
+  }
+  function maybeSit() {
+    if (Math.random()<.28&&!sitting&&idle&&!dragging) startSit(); else scheduleIdle();
+  }
+  function startSit() {
+    sitting = true; container.style.transform = 'translateY(6px)';
+    container.style.transition = 'transform 0.4s ease';
+    bubble('zZz...'); sitTmr = setTimeout(stopSit, 2500+Math.random()*4000);
+  }
+  function stopSit() {
+    sitting = false; container.style.transform = ''; clearTimeout(sitTmr); scheduleIdle();
+  }
+  function scheduleIdle() {
+    clearTimeout(moveTmr);
+    if (!dragging&&!sitting) moveTmr = setTimeout(randMove, 1800+Math.random()*3500);
+  }
 
-// ═══════════════════════════════════════
-//  WELCOME ONBOARDING
-// ═══════════════════════════════════════
-function initWelcome(){
-  if(welcomed)return;
-  document.getElementById('welcomeOverlay').style.display='flex';
-  // Render animal grid for step 2
-  const grid=document.getElementById('welAnimalGrid');
-  grid.innerHTML=Object.entries(ANIMALS).map(([k,v])=>`
-    <button class="wel-an ${welAnimal===k?'sel':''}" onclick="welPick('${k}',this)">
-      <span class="ani">${v.icon}</span>
-      <span class="ann">${v.name}</span>
-    </button>`).join('');
-}
-function welPick(key,btn){
-  welAnimal=key;
-  document.querySelectorAll('.wel-an').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-}
-function welcomeNext(){
-  const name=document.getElementById('kidNameInp').value.trim();
-  if(!name){document.getElementById('kidNameInp').focus();return;}
-  kidName=name.substring(0,10);
-  document.getElementById('ws1').style.display='none';
-  document.getElementById('ws2').style.display='block';
-  document.getElementById('petNickInp').value=petNickname;
-}
-function welcomeStart(){
-  let nick=document.getElementById('petNickInp').value.trim();
-  if(!nick)nick='奶糖';
-  petNickname=nick.substring(0,8);
-  selAnimal=welAnimal;
-  welcomed=true;
-  LS.set('ct_kidname',kidName);
-  LS.set('ct_nick',petNickname);
-  LS.set('ct_animal',selAnimal);
-  LS.set('ct_welcomed',true);
-  document.getElementById('welcomeOverlay').style.display='none';
-  renderHome();
-  spawnConfetti(30);
-  Sound.cel();
-}
+  (function loop() {
+    if (!dragging&&!sitting) {
+      const dx = tgtX-catX, dy = tgtY-catY, d = Math.hypot(dx,dy);
+      if (d>.35) {
+        const sp = idle?.045:.078; catX += dx*sp; catY += dy*sp; upPos();
+        if (d<.5) { catX = tgtX; catY = tgtY; upPos(); }
+      }
+    }
+    requestAnimationFrame(loop);
+  })();
 
-// ═══════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════
-renderHome();
-renderCal();
-initWelcome();
-// Access lock check (per-browser-session)
-if(sessionStorage.getItem('ct_unlocked')==='1'){
-  document.getElementById('lockScreen').style.display='none';
-}
-</script>
-
-<!-- PWA Service Worker -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').then(function(reg) {
-      console.log('SW registered:', reg.scope);
-    }).catch(function(err) {
-      console.log('SW registration failed:', err);
-    });
+  // ============== EVENTS ==============
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.cat-container')||dragging) return;
+    lastAct = Date.now(); hint.style.opacity = '0';
+    setTimeout(() => hint.style.opacity = '1', 2200);
+    goTo(e.clientX, e.clientY);
   });
-}
+  document.addEventListener('mousemove', function(e) {
+    if (dragging) {
+      catX = Math.max(0, Math.min(e.clientX-dragOX, innerWidth-WW));
+      catY = Math.max(0, Math.min(e.clientY-dragOY, innerHeight-HH));
+      upPos(); return;
+    }
+    lastAct = Date.now();
+    const cx = catX+WW/2, cy = catY+HH/2, dist = Math.hypot(e.clientX-cx, e.clientY-cy);
+    if (dist<240&&idle&&!sitting&&dist>42) {
+      setTgt(catX+(e.clientX-cx)*.4, catY+(e.clientY-cy)*.4);
+      idle = false; clearTimeout(idleTmr);
+      idleTmr = setTimeout(() => { idle = true; maybeSit(); }, 2000);
+    }
+  });
+  container.addEventListener('mousedown', function(e) {
+    dragging = true; dragOX = e.clientX-catX; dragOY = e.clientY-catY;
+    stopSit(); bubble('?'); hint.style.opacity = '0'; e.preventDefault();
+  });
+  document.addEventListener('mouseup', function() {
+    if (!dragging) return;
+    dragging = false; tgtX = catX; tgtY = catY;
+    bubble('PURR~'); idle = true;
+    clearTimeout(idleTmr); idleTmr = setTimeout(() => maybeSit(), 1800);
+  });
+  document.addEventListener('dblclick', function(e) {
+    const cx = catX+WW/2, cy = catY+HH/2;
+    if (Math.hypot(e.clientX-cx, e.clientY-cy)<150) {
+      bubble('YUM!'); hearts();
+      container.style.transition = 'transform .07s linear';
+      container.style.transform = 'rotate(5deg)';
+      setTimeout(() => {
+        container.style.transform = 'rotate(-5deg)';
+        setTimeout(() => { container.style.transform = ''; container.style.transition = ''; }, 70);
+      }, 70);
+    }
+  });
+  container.addEventListener('touchstart', function(e) {
+    dragging = true; const t = e.touches[0];
+    dragOX = t.clientX-catX; dragOY = t.clientY-catY;
+    stopSit(); bubble('?'); hint.style.opacity = '0'; e.preventDefault();
+  }, {passive:false});
+  document.addEventListener('touchmove', function(e) {
+    if (!dragging) return; const t = e.touches[0];
+    catX = Math.max(0, Math.min(t.clientX-dragOX, innerWidth-WW));
+    catY = Math.max(0, Math.min(t.clientY-dragOY, innerHeight-HH)); upPos();
+  });
+  document.addEventListener('touchend', function() {
+    if (!dragging) return;
+    dragging = false; tgtX = catX; tgtY = catY; idle = true;
+    clearTimeout(idleTmr); idleTmr = setTimeout(() => maybeSit(), 1800);
+  });
+  setInterval(() => {
+    if (!dragging&&!sitting&&idle&&Date.now()-lastAct>14000) { randMove(); lastAct = Date.now(); }
+  }, 5000);
+  addEventListener('resize', () => {
+    catX = Math.max(0, Math.min(catX, innerWidth-WW));
+    catY = Math.max(0, Math.min(catY, innerHeight-HH));
+    tgtX = Math.max(0, Math.min(tgtX, innerWidth-WW));
+    tgtY = Math.max(0, Math.min(tgtY, innerHeight-HH)); upPos();
+  });
+
+  render(false); upPos(); scheduleIdle();
+})();
 </script>
 </body>
 </html>
